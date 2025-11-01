@@ -1,8 +1,3 @@
-//
-// Created by Janus on 26/10/2025.
-//
-
-
 #include "Tablero.h"
 #include <cstdlib>
 #include <iostream>
@@ -10,21 +5,24 @@
 ========================================================================================
                         IMPLEMENTACIÓN DE LA CLASE TABLERO
 ========================================================================================
-La clase Tablero representa un tablero de 10x10 con valores 0 y 1, tambien almacena la
-posicion actual en coordenadas TableroX y TableroY, tambien define una posicion valida
-(donde la celda es diferente de cero) y tambien provee acceso a las coordenadas actuales
+La clase Tablero representa un tablero de 10x10 con valores 0 y 1, también almacena la
+posición actual en coordenadas TableroX y TableroY, también define una posición valída
+(donde la celda es diferente de cero) y también provee acceso a las coordenadas actuales
 mediante getters
 
 Se demuestra:
- - Uso de constructores mediante atributod y estructuras bidimmensionales
- - Uso de metodos para la generacion de coordenadas aleatorias
- - Impresion de matrices en consola con bucles anidados
+ - Uso de constructores mediante atributos y estructuras bidimensionales
+ - Uso de metodos para la generación de coordenadas aleatorias
+ - Impresión de matrices en consola con bucles anidados
 ========================================================================================
 */
 Tablero::Tablero() {
 
     this->TableroX = 0;
     this->TableroY = 0;
+
+    // Se define los vacios del laberinto:
+
     matriz[0][0] = 0;
     matriz[0][1] = 0;
     matriz[0][2] = 1;
@@ -131,54 +129,32 @@ Tablero::Tablero() {
     matriz[9][4] = 1;
     matriz[9][5] = 1;
     matriz[9][6] = 0;
-    matriz[9][7] = 0;
+    matriz[9][7] = 1;
     matriz[9][8] = 0;
     matriz[9][9] = 1;
     srand(time(0));
-    // for (int i=0; i < 10; i++) {
-    //     for (int j=0; j < 10; j++) {
-    //
-    //         std::cout<<"["<<i<<"]"<<"["<<j<<"]"<<"="<<matriz[i][j]<<" ";
-    //     }
-    //     std::cout << std::endl;
-    //     std::cout << std::endl;
-    // }
-
 }
 
 
 
-void Tablero::Definirposicion() {
+void Tablero::Definirposicion() { // Se define la  inicial del jugador
 
     int aux=0;
     while (aux ==0 or (TableroX==9 and TableroY==9)) {
         DefinirposicionX();
         DefinirposicionY();
         aux=matriz[TableroX][TableroY];
-    }
-
-//establezco una veriable para el condicional = 0
-    //el condicional se va a repetir mientras que la posicion x , y sea igual a 0 matriz[x][y]= 0
-//llamo a los dos metodos
-    //definiriposicionx me guarda cualquier numero en el atributo x
-    //definiposcion y me guarda cualquier nuemro el atributo y
-
-}
+    }}
 
 void Tablero::DefinirposicionX() {
     // Inicializa la semilla (solo se hace una vez)
     TableroX = rand() % 10; // Genera número entre 0 y 9
-
-
 }
 
 void Tablero::DefinirposicionY() {
-              // Inicializa la semilla (solo se hace una vez)
-    TableroY = rand() % 10; // Genera número entre 0 y 9
-
+    TableroY = rand() % 10;
 }
-//necesito uno solo que me devuelve dos cosas
-//creamos un metodefinirgeneral , metemos definir posicion y , y definiri poscion x en un bucle dentro de ese metodo general , hasta que me cumplan condicion de que matriz[i][j] !=0;
+
 
 int Tablero::GetTableroX() {
     return TableroX;
@@ -186,8 +162,8 @@ int Tablero::GetTableroX() {
 int Tablero::GetTableroY() {
     return TableroY;
 }
-//Se añadio el getter para poder leer la matriz en movimiento.cpp
-int Tablero::matriz[10][10] = {
+
+int Tablero::matriz[10][10] = { // se crea una matriz estatica que pertenecera a la clase
     {0,0,0,0,0,0,0,0,0,0},
     {0,0,0,0,0,0,0,0,0,0},
     {0,0,0,0,0,0,0,0,0,0},

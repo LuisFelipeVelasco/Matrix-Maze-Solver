@@ -1,8 +1,17 @@
-// language: cpp
-// File: `Visual.h` (reemplazar)
 #ifndef PROYECTO_AGENTE_INTELIGENTE_VISUAL_H
 #define PROYECTO_AGENTE_INTELIGENTE_VISUAL_H
-
+/*
+===============================================================================
+                                TARJETA CRC
+===============================================================================
+Nombre de la clase:Visual
+Responsabilidades:
+    - Mostrar la ejecucion del algoritmo en consola
+Colaboradores:
+    - Tablero
+    - Movimiento
+===============================================================================
+*/
 class Visual {
 private:
     int* PosicionX;

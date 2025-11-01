@@ -1,9 +1,22 @@
-// language: cpp
-// File: `Visual.cpp` (reemplazar)
 #include "Visual.h"
 #include <iostream>
 #include <thread>
 #include <chrono>
+
+
+/*
+========================================================================================
+                        IMPLEMENTACIÓN DE LA CLASE VISUAL
+========================================================================================
+La clase Visual se encarga de mostrar la ejecucion del programa en consola, para qué cada
+movimiento y accion del Avatar pueda ser visualizado
+
+Se demuestra:
+ - Uso de punteros para conocer la direccion del avatar en cualquier momento sin necesidad
+   de copias.
+ - Impresión de avisos por medio de for anidados y metodos
+========================================================================================
+*/
 
 #ifdef _WIN32
     #include <windows.h>
@@ -52,10 +65,10 @@ void Visual::MostrarEncabezado() {
     if (UseAsciiFallback) {
         std::cout << "\n==== LABERINTO - AGENTE INTELIGENTE ====\n\n";
     } else {
-        std::cout << "\n╔════════════════════════════════════════════════════╗\n";
-        std::cout << "║         LABERINTO - AGENTE INTELIGENTE             ║\n";
-        std::cout << "║              Terminator en Acción                  ║\n";
-        std::cout << "╚════════════════════════════════════════════════════╝\n\n";
+        std::cout << "╔══════════════════════════════════════════════════════╗\n";
+        std::cout << "║         LABERINTO - AGENTE INTELIGENTE               ║\n";
+        std::cout << "║                 SMART EN ACCION                      ║\n";
+        std::cout << "╚══════════════════════════════════════════════════════╝\n\n";
     }
 }
 
@@ -79,7 +92,7 @@ void Visual::MostrarLeyenda() {
     } else {
         std::cout << "\n  ┌─────────────── LEYENDA ───────────────┐\n";
         std::cout << "  │  \033[1;32mS\033[0m = Soldado (Agente Inteligente)     │\n";
-        std::cout << "  │  \033[1;31mX\033[0m = Obstáculo (Pared)                │\n";
+        std::cout << "  │  \033[1;31mX\033[0m = Vacio o Sin salida               │\n";
         std::cout << "  │  \033[0;37m·\033[0m = Pasillo (Camino disponible)      │\n";
         std::cout << "  │  \033[1;33m★\033[0m = Salida (Objetivo [9][9])         │\n";
         std::cout << "  └───────────────────────────────────────┘\n\n";
@@ -87,7 +100,7 @@ void Visual::MostrarLeyenda() {
 }
 
 void Visual::DibujarTablero(int (&matriz)[10][10]) {
-    LimpiarPantalla();
+    //LimpiarPantalla();
     MostrarEncabezado();
 
     if (UseAsciiFallback) {
@@ -129,11 +142,12 @@ void Visual::DibujarTablero(int (&matriz)[10][10]) {
     std::cout << "\n";
 
     std::cout << "\n  ┌─────────────── ESTADO ────────────────┐\n";
-    std::cout << "  │  Posición actual: [\033[1;36m" << *PosicionX << "\033[0m][\033[1;36m" << *PosicionY << "\033[0m]           │\n";
+    std::cout << "  │  Posición actual: [\033[1;36m" << *PosicionX << "\033[0m][\033[1;36m" << *PosicionY << "\033[0m]              │\n";
     std::cout << "  │  Movimientos realizados: \033[1;35m" << ContadorPasos << "\033[0m            │\n";
     std::cout << "  └───────────────────────────────────────┘\n";
 
     MostrarLeyenda();
+
 }
 
 void Visual::Delay(int milisegundos) {

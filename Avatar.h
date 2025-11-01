@@ -1,8 +1,3 @@
-//
-// Created by Janus on 26/10/2025.
-//
-
-
 #ifndef PROYECTO_AGENTE_INTELIGENTE_AVATAR_H
 #define PROYECTO_AGENTE_INTELIGENTE_AVATAR_H
 #include <string>
@@ -10,23 +5,22 @@
 ===============================================================================
                                 TARJETA CRC
 ===============================================================================
-Nombre de la clase:       Avatar
+Nombre de la clase:Avatar
 Responsabilidades:
-    - Definir un avatar con un nombre y la posicion en la matriz
-    - imprimir la posicion actual del soldado
+    - Definir un avatar con un nombre y la posición en la matriz
+    - imprimir la posición actual del soldado
 Colaboradores:
     - Tablero
-    - Movimineto
+    - Movimiento
 ===============================================================================
 */
-
 class Avatar {
 private:
     std::string Nombre{};
     int PosicionX{};
     int PosicionY{};
 public:
-    Avatar(std::string Nombre , int& PosicionX, int& PosicionY);
+    Avatar(std::string Nombre , int& PosicionX, int& PosicionY); // Paso por referencia
     std::string GetNombre();
     int& GetPosicionY() ;
     int& GetPosicionX() ;
@@ -34,7 +28,4 @@ public:
     void SetPosicionY(int posicionY);
     void Posicion();
 };
-
-
-
 #endif //PASO_MENSAJES_AVATAR_H

@@ -1,16 +1,11 @@
-//
-// Created by Janus on 26/10/2025.
-//
-
-
 #include "Avatar.h"
 #include <iostream>
 /*
 ===============================================================================
                         IMPLEMENTACIÓN DE LA CLASE AVATAR
 ===============================================================================
-La calse Avatar representa un personaje dentro del tablero del juego. Cada avatar
-posee un nombre y una posicion (PosicionX y PosicionY) que indica su ubicacion
+La clase Avatar representa un personaje dentro del tablero del juego. Cada avatar
+posee un nombre y una posición (PosiciónX y PosiciónY) que indica su ubicacion
 actual dentro de la matriz
 Se demuestra:
  - Uso de constructores con argumentos de referencia

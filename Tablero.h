@@ -1,17 +1,13 @@
-//
-// Created by Janus on 26/10/2025.
-//
-
 #ifndef PROYECTO_AGENTE_INTELIGENTE_TABLERO_H
 #define PROYECTO_AGENTE_INTELIGENTE_TABLERO_H
 /*
 ===============================================================================
                                 TARJETA CRC
 ===============================================================================
-Nombre de la clase:       Tablero
+Nombre de la clase:Tablero
 Responsabilidades:
     - Crear una matriz 10x10 con valores en las cerdas de 0 y 1
-    - Definir la posicion aleotoria del soldado
+    - Definir la posición aleatoria del soldado
 Colaboradores:
     - Avatar
 ===============================================================================
