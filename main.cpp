@@ -3,7 +3,8 @@
 #include "Tablero.h"
 #include "Avatar.h"
 #include "Movimiento.h"
-
+#include <exception>
+#include <cassert>
 /*
 Proyecto: Paso-de-Mensajes-Main
 
@@ -23,13 +24,44 @@ Meta: Llegar a la salida ubicada en la celda [9,9]
 */
 
 int main() {
+    std::cout << "===== DEBUGGER INICIADO =====" << std::endl;
+
+    // === TABLERO ===
+    std::cout << "[DEBUG] Creando objeto Tablero (Laberinto)..." << std::endl;
     Tablero Laberinto;
+    std::cout << "[DEBUG] Definiendo posición inicial..." << std::endl;
     Laberinto.Definirposicion();
     int PosicionX=Laberinto.GetTableroX();
     int PosicionY=Laberinto.GetTableroY();
+    std::cout << "[INFO] Posición inicial obtenida: X=" << PosicionX << " , Y=" << PosicionY << std::endl;
+    // Validación con assert
+    assert(PosicionX >= 0 && "ERROR: PosicionX no puede ser negativa");
+    assert(PosicionY >= 0 && "ERROR: PosicionY no puede ser negativa");
+    // === AVATAR ===
+    std::cout << "\n[DEBUG] Creando Avatar 'Smart'..." << std::endl;
     Avatar AgenteI("Smart" , PosicionX, PosicionY);
+      std::cout << "[DEBUG] Mostrando posición inicial del Avatar..." <<   std::endl;
     AgenteI.Posicion();
+    // Verificar consistencia
+    assert(AgenteI.GetPosicionX() == PosicionX && "ERROR: Posicion X del Avatar no coincide con la del Tablero");
+    assert(AgenteI.GetPosicionY() == PosicionY && "ERROR: Posicion Y del Avatar no coincide con la del Tablero");
+
+
+    // === MOVIMIENTO ===
+    std::cout << "\n[DEBUG] Inicializando módulo de Movimiento..." << std::endl;
     Movimiento MovimientoAgente(AgenteI.GetPosicionX(),AgenteI.GetPosicionY());
+    std::cout << "[DEBUG] Ejecutando método Moverse()..." << std::endl;
+    try {
+        MovimientoAgente.Moverse();
+        std::cout << "[OK] Movimiento ejecutado sin errores." << std::endl;
+    } catch (const std::exception& e) {
+        std::cout << "[EXCEPTION] Error durante el movimiento: " << e.what() << std::endl;
+    } catch (...) {
+        std::cout << "[EXCEPTION] Error desconocido durante el movimiento." << std::endl;
+    }
+
+    // === FINAL ===
+    std::cout << "\n===== DEBUGGER FINALIZADO =====" << std::endl;
     MovimientoAgente.Moverse();
     return 0;
 }

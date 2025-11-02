@@ -100,7 +100,7 @@ void Visual::MostrarLeyenda() {
 }
 
 void Visual::DibujarTablero(int (&matriz)[10][10]) {
-    //LimpiarPantalla();
+    LimpiarPantalla();
     MostrarEncabezado();
 
     if (UseAsciiFallback) {
