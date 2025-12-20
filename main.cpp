@@ -2,7 +2,6 @@
 #include <string>
 #include "Tablero.h"
 #include "Avatar.h"
-#include "Movimiento.h"
 #include <exception>
 #include <cassert>
 /*
@@ -42,18 +41,17 @@ int main()
     std::cout << "\n[DEBUG] Creando Avatar 'Smart'..." << std::endl;
     Avatar AgenteI("Smart", PosicionX, PosicionY);
     std::cout << "[DEBUG] Mostrando posición inicial del Avatar..." << std::endl;
-    AgenteI.Posicion();
+    
     // Verificar consistencia
-    assert(AgenteI.GetPosicionX() == PosicionX && "ERROR: Posicion X del Avatar no coincide con la del Tablero");
-    assert(AgenteI.GetPosicionY() == PosicionY && "ERROR: Posicion Y del Avatar no coincide con la del Tablero");
+    assert(AgenteI.GetPositionX() == PosicionX && "ERROR: Posicion X del Avatar no coincide con la del Tablero");
+    assert(AgenteI.GetPositionY() == PosicionY && "ERROR: Posicion Y del Avatar no coincide con la del Tablero");
 
     // === MOVIMIENTO ===
     std::cout << "\n[DEBUG] Inicializando módulo de Movimiento..." << std::endl;
-    Movimiento MovimientoAgente(AgenteI.GetPosicionX(), AgenteI.GetPosicionY());
     std::cout << "[DEBUG] Ejecutando método Moverse()..." << std::endl;
     try
     {
-        MovimientoAgente.Moverse();
+        AgenteI.Moverse();
         std::cout << "[OK] Movimiento ejecutado sin errores." << std::endl;
     }
     catch (const std::exception &e)
@@ -67,6 +65,6 @@ int main()
 
     // === FINAL ===
     std::cout << "\n===== DEBUGGER FINALIZADO =====" << std::endl;
-    MovimientoAgente.Moverse();
+    AgenteI.Moverse();
     return 0;
 }

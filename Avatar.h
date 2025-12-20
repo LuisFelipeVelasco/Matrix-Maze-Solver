@@ -1,31 +1,39 @@
-#ifndef PROYECTO_AGENTE_INTELIGENTE_AVATAR_H
-#define PROYECTO_AGENTE_INTELIGENTE_AVATAR_H
+#ifndef PROYECTO_AGENTE_INTELIGENTE_MOVIMIENTO_H
+#define PROYECTO_AGENTE_INTELIGENTE_MOVIMIENTO_H
+
 #include <string>
+#include <vector>
+
 /*
 ===============================================================================
-                                TARJETA CRC
+                                MOVIMIENTO CRC
 ===============================================================================
-Nombre de la clase:Avatar
+Nombre de la clase:Movimiento
 Responsabilidades:
-    - Definir un avatar con un nombre y la posición en la matriz
-    - imprimir la posición actual del soldado
+    - Movimiento del soldado (arriba, abajo, izquierda, derecha)
 Colaboradores:
+    - Avatar
     - Tablero
-    - Movimiento
 ===============================================================================
 */
 class Avatar {
 private:
     std::string Nombre{};
-    int PosicionX{};
-    int PosicionY{};
+    int& PosicionX;
+    int& PosicionY;
+    std::vector<std::string> UltimosMovimientos{}; // vector que permite registrar los últimos movimientos realizados por el Avatar
+
 public:
-    Avatar(std::string Nombre , int& PosicionX, int& PosicionY); // Paso por referencia
-    std::string GetNombre();
-    int& GetPosicionY() ;
-    int& GetPosicionX() ;
-    void SetPosicionX(int posicionX);
-    void SetPosicionY(int posicionY);
-    void Posicion();
+    Avatar( std::string nombre, int& posicionX ,  int& posicionY); // Paso de mensaje por referencia
+
+    int GetPositionX();
+    int GetPositionY();
+    // Metodos de deteccion de vacios para tomar una decision
+    bool DetectarVacioDerecha(int (&matriz)[10][10]);
+    bool DetectarVacioIzquierda(int (&matriz)[10][10]);
+    bool DetectarVacioArriba(int (&matriz)[10][10]);
+    bool DetectarVacioAbajo(int (&matriz)[10][10]);
+    //Metodo de movimiento
+    std::string Moverse();
 };
-#endif //PASO_MENSAJES_AVATAR_H
+#endif //PASO_MENSAJES_MOVIMIENTO_H
