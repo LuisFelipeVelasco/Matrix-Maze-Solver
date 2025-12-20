@@ -46,7 +46,7 @@ In VS code:
 
 1. Press Ctrl + Shift + P
 
-2. Select Dev Containers: Reopen in Container
+2. Select Dev Containers: Reopen in Container (Docker Desktop must be running)
 
 3. Press F5 (VS Code runs launch.json → tasks.json → Makefile → make all) 
 
