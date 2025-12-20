@@ -23,7 +23,8 @@ Los Vacios y Espacios sin salida se representan como 0 y los Espacios Libres com
 Meta: Llegar a la salida ubicada en la celda [9,9]
 */
 
-int main() {
+int main()
+{
     std::cout << "===== DEBUGGER INICIADO =====" << std::endl;
 
     // === TABLERO ===
@@ -31,32 +32,36 @@ int main() {
     Tablero Laberinto;
     std::cout << "[DEBUG] Definiendo posición inicial..." << std::endl;
     Laberinto.Definirposicion();
-    int PosicionX=Laberinto.GetTableroX();
-    int PosicionY=Laberinto.GetTableroY();
+    int PosicionX = Laberinto.GetTableroX();
+    int PosicionY = Laberinto.GetTableroY();
     std::cout << "[INFO] Posición inicial obtenida: X=" << PosicionX << " , Y=" << PosicionY << std::endl;
     // Validación con assert
     assert(PosicionX >= 0 && "ERROR: PosicionX no puede ser negativa");
     assert(PosicionY >= 0 && "ERROR: PosicionY no puede ser negativa");
     // === AVATAR ===
     std::cout << "\n[DEBUG] Creando Avatar 'Smart'..." << std::endl;
-    Avatar AgenteI("Smart" , PosicionX, PosicionY);
-      std::cout << "[DEBUG] Mostrando posición inicial del Avatar..." <<   std::endl;
+    Avatar AgenteI("Smart", PosicionX, PosicionY);
+    std::cout << "[DEBUG] Mostrando posición inicial del Avatar..." << std::endl;
     AgenteI.Posicion();
     // Verificar consistencia
     assert(AgenteI.GetPosicionX() == PosicionX && "ERROR: Posicion X del Avatar no coincide con la del Tablero");
     assert(AgenteI.GetPosicionY() == PosicionY && "ERROR: Posicion Y del Avatar no coincide con la del Tablero");
 
-
     // === MOVIMIENTO ===
     std::cout << "\n[DEBUG] Inicializando módulo de Movimiento..." << std::endl;
-    Movimiento MovimientoAgente(AgenteI.GetPosicionX(),AgenteI.GetPosicionY());
+    Movimiento MovimientoAgente(AgenteI.GetPosicionX(), AgenteI.GetPosicionY());
     std::cout << "[DEBUG] Ejecutando método Moverse()..." << std::endl;
-    try {
+    try
+    {
         MovimientoAgente.Moverse();
         std::cout << "[OK] Movimiento ejecutado sin errores." << std::endl;
-    } catch (const std::exception& e) {
+    }
+    catch (const std::exception &e)
+    {
         std::cout << "[EXCEPTION] Error durante el movimiento: " << e.what() << std::endl;
-    } catch (...) {
+    }
+    catch (...)
+    {
         std::cout << "[EXCEPTION] Error desconocido durante el movimiento." << std::endl;
     }
 

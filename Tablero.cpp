@@ -16,7 +16,8 @@ Se demuestra:
  - Impresión de matrices en consola con bucles anidados
 ========================================================================================
 */
-Tablero::Tablero() {
+Tablero::Tablero()
+{
 
     this->TableroX = 0;
     this->TableroY = 0;
@@ -135,47 +136,51 @@ Tablero::Tablero() {
     srand(time(0));
 }
 
+void Tablero::Definirposicion()
+{ // Se define la  inicial del jugador
 
-
-void Tablero::Definirposicion() { // Se define la  inicial del jugador
-
-    int aux=0;
-    while (aux ==0 or (TableroX==9 and TableroY==9)) {
+    int aux = 0;
+    while (aux == 0 || (TableroX == 9 && TableroY == 9))
+    {
         DefinirposicionX();
         DefinirposicionY();
-        aux=matriz[TableroX][TableroY];
-    }}
+        aux = matriz[TableroX][TableroY];
+    }
+}
 
-void Tablero::DefinirposicionX() {
+void Tablero::DefinirposicionX()
+{
     // Inicializa la semilla (solo se hace una vez)
     TableroX = rand() % 10; // Genera número entre 0 y 9
 }
 
-void Tablero::DefinirposicionY() {
+void Tablero::DefinirposicionY()
+{
     TableroY = rand() % 10;
 }
 
-
-int Tablero::GetTableroX() {
+int Tablero::GetTableroX()
+{
     return TableroX;
 }
-int Tablero::GetTableroY() {
+int Tablero::GetTableroY()
+{
     return TableroY;
 }
 
 int Tablero::matriz[10][10] = { // se crea una matriz estatica que pertenecera a la clase
-    {0,0,0,0,0,0,0,0,0,0},
-    {0,0,0,0,0,0,0,0,0,0},
-    {0,0,0,0,0,0,0,0,0,0},
-    {0,0,0,0,0,0,0,0,0,0},
-    {0,0,0,0,0,0,0,0,0,0},
-    {0,0,0,0,0,0,0,0,0,0},
-    {0,0,0,0,0,0,0,0,0,0},
-    {0,0,0,0,0,0,0,0,0,0},
-    {0,0,0,0,0,0,0,0,0,0},
-    {0,0,0,0,0,0,0,0,0,0}
-};
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
 
-int (&Tablero::GetMatrizStatic())[10][10] {
+int (&Tablero::GetMatrizStatic())[10][10]
+{
     return matriz;
 }
