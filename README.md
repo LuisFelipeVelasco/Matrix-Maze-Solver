@@ -29,24 +29,29 @@ Matrix-Maze-Solver/
 # Build & Run
 Requirements:
 
-C++ compiler (GCC / Clang / MSVC)
+Docker Desktop
 
-CMake (version 3.10 or higher)
+VS code 
+
+Extensión Dev Containers
+
+steps:
 
 ```bash
-git clone https://github.com/your-username/Matrix-Maze-Solver.git
+https://github.com/LuisFelipeVelasco/Matrix-Maze-Solver.git
 cd Matrix-Maze-Solver
-mkdir build
-cd build
-cmake ..
-make
-
-cd build
-
-cmake ..
-
-make
+code .
 ```
+In VS code:
+
+1. Press Ctrl + Shift + P
+
+2. Select Dev Containers: Reopen in Container
+
+3. Press F5 (VS Code runs launch.json → tasks.json → Makefile → make all) 
+
+4. Press F5 (VS Code runs launch.json → ${workspaceFolder}/main)
+
 # Purpose of the Project 🎯
 
 This project was created as a learning-focused implementation to practice:
