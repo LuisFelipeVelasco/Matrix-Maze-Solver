@@ -1,36 +1,36 @@
-#ifndef PROYECTO_AGENTE_INTELIGENTE_VISUAL_H
-#define PROYECTO_AGENTE_INTELIGENTE_VISUAL_H
+#ifndef MATRIX_MAZE_SOLVER_VISUAL_H
+#define MATRIX_MAZE_SOLVER_VISUAL_H
 /*
 ===============================================================================
-                                TARJETA CRC
+                                CRC CARD
 ===============================================================================
-Nombre de la clase:Visual
-Responsabilidades:
-    - Mostrar la ejecucion del algoritmo en consola
-Colaboradores:
-    - Tablero
-    - Movimiento
+Class Name: Visual
+Responsibilities:
+    - Display the algorithm execution in console
+Collaborators:
+    - Board
+    - Movement
 ===============================================================================
 */
 class Visual {
 private:
-    int* PosicionX;
-    int* PosicionY;
-    int ContadorPasos;
-    bool UseAsciiFallback; // fallback si la consola no soporta UTF-8/ANSI
+    int* PositionX;
+    int* PositionY;
+    int StepCounter;
+    bool UseAsciiFallback; // fallback if console does not support UTF-8/ANSI
 
-    void LimpiarPantalla();
-    void MostrarCelda(int valor, bool esPosicionActual, bool esSalida);
-    void MostrarEncabezado();
-    void MostrarLeyenda();
-    void EnableUtf8AndAnsi(); // habilita UTF-8 y ANSI en Windows
+    void ClearScreen();
+    void ShowCell(int value, bool isCurrentPosition, bool isExit);
+    void ShowHeader();
+    void ShowLegend();
+    void EnableUtf8AndAnsi(); // enable UTF-8 and ANSI on Windows
 
 public:
     Visual(int* posX, int* posY);
-    void DibujarTablero(int (&matriz)[10][10]);
-    void Delay(int milisegundos);
-    void IncrementarPasos();
-    void MostrarVictoria();
+    void DrawBoard(int (&matrix)[10][10]);
+    void Delay(int milliseconds);
+    void IncrementSteps();
+    void ShowVictory();
 };
 
-#endif //PROYECTO_AGENTE_INTELIGENTE_VISUAL_H
+#endif //MATRIX_MAZE_SOLVER_VISUAL_H

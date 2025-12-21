@@ -1,4 +1,4 @@
-#include "Tablero.h"
+#include "Board.h"
 #include "Avatar.h"
 #include "Visual.h"
 #include <string>
@@ -6,704 +6,727 @@
 #include <vector>
 /*
 ===============================================================================
-                        IMPLEMENTACIÓN DE LA CLASE MOVIMIENTO
+                        IMPLEMENTATION OF THE AVATAR CLASS
 ===============================================================================
-La clase Movimiento representa las acciones que puede realizar el avatar,
-modificando sus coordenadas para simular su desplazamiento
+The Avatar class represents the actions that the avatar can perform,
+modifying its coordinates to simulate its displacement
 
-Se demuestra:
- - Paso de objetos por referencia
- - Asociar una posición existente del tablero (por referencia)
- - Cambiar la posición actual moviendo en distintas direcciones
- - Integración con la clase Visual para mostrar el progreso
+Demonstrates:
+ - Passing objects by reference
+ - Associating an existing board position (by reference)
+ - Changing current position moving in different directions
+ - Integration with the Visual class to show progress
 ===============================================================================
 */
 
-Avatar::Avatar(std::string nombre , int &x, int &y) : Nombre (nombre ) ,PosicionX(x), PosicionY(y) {}
+Avatar::Avatar(std::string name , int &x, int &y) : Name (name ) ,PositionX(x), PositionY(y) {}
 
-int Avatar::GetPositionX(){return PosicionX;}
-int Avatar::GetPositionY(){return PosicionY;}
+int Avatar::GetPositionX(){return PositionX;}
+int Avatar::GetPositionY(){return PositionY;}
 
 
-std::string Avatar::Moverse()
+void Avatar::Move()
 {
-    // Crear objeto Visual pasando punteros a las posiciones
-    Visual vista(&PosicionX, &PosicionY);
+    // Create Visual object passing pointers to positions
+    Visual view(&PositionX, &PositionY);
 
-    // Obtener referencia a la matriz del tablero
-    int (&matriz)[10][10] = Tablero::GetMatrizStatic();
+    // Get reference to board matrix
+    int (&matrix)[10][10] = Board::GetMatrixStatic();
 
-    // Mostrar estado inicial del laberinto
-    vista.DibujarTablero(matriz); // se llama
-    vista.Delay(2000);            // Pausa de 2 segundos al inicio
+    // Show initial state of maze
+    view.DrawBoard(matrix);
+    view.Delay(2000);            // 2 second pause at start
 
-    while (PosicionY != 9 || PosicionX != 9)
-    { // ejecutar hasta que logre llegar a la salida
-        // Las variables der,izq,arr,abj para que direccion alrededor del avatar hay un camino sin salida o un vacio
-        bool der = DetectarVacioDerecha(matriz);
-        bool izq = DetectarVacioIzquierda(matriz);
-        bool arr = DetectarVacioArriba(matriz);
-        bool abj = DetectarVacioAbajo(matriz);
+    while (PositionY != 9 || PositionX != 9)
+    { // execute until reaching exit
+        // Variables right,left,up,down to detect path direction around avatar
+        bool right = DetectEmptyRight(matrix);
+        bool left = DetectEmptyLeft(matrix);
+        bool up = DetectEmptyUp(matrix);
+        bool down = DetectEmptyDown(matrix);
 
-        if (der && izq && arr)
+        if (right && left && up)
         {
-            // Bloqueado a la derecha, izquierda y arriba: moverse abajo
-            matriz[PosicionX][PosicionY] = 0;
-            PosicionX++;
-            if (!UltimosMovimientos.empty())
-            {                                  // si ya han habido movimientos realizados
-                UltimosMovimientos.pop_back(); // borra el último movimiento
+            // Blocked right, left and up: move down
+            matrix[PositionX][PositionY] = 0;
+            PositionX++;
+            if (!LastMovements.empty())
+            {                                  // if movements have already been made
+                LastMovements.pop_back(); // delete last movement
             }
         }
-        else if (der && izq && abj)
+        else if (right && left && down)
         {
-            // Bloqueado a la derecha, izquierda y abajo: moverse arriba
-            matriz[PosicionX][PosicionY] = 0;
-            PosicionX--;
-            if (!UltimosMovimientos.empty())
+            // Blocked right, left and down: move up
+            matrix[PositionX][PositionY] = 0;
+            PositionX--;
+            if (!LastMovements.empty())
             {
-                UltimosMovimientos.pop_back();
+                LastMovements.pop_back();
             }
         }
-        else if (der && abj && arr)
+        else if (right && down && up)
         {
-            // Bloqueado a la derecha, abajo y arriba: moverse a la izquierda
-            matriz[PosicionX][PosicionY] = 0;
-            PosicionY--;
-            if (!UltimosMovimientos.empty())
+            // Blocked right, down and up: move left
+            matrix[PositionX][PositionY] = 0;
+            PositionY--;
+            if (!LastMovements.empty())
             {
-                UltimosMovimientos.pop_back();
+                LastMovements.pop_back();
             }
         }
-        else if (izq && abj && arr)
+        else if (left && down && up)
         {
-            // Bloqueado a la izquierda, abajo y arriba: moverse a la derecha
-            matriz[PosicionX][PosicionY] = 0;
-            PosicionY++;
-            if (!UltimosMovimientos.empty())
+            // Blocked left, down and up: move right
+            matrix[PositionX][PositionY] = 0;
+            PositionY++;
+            if (!LastMovements.empty())
             {
-                UltimosMovimientos.pop_back();
+                LastMovements.pop_back();
             }
         }
 
-        else if (izq && der)
-        { // Bloqueado por derecha e izquierda
-            if (!UltimosMovimientos.empty())
-            { // si ya se ha registrado un movimiento :
-                if (UltimosMovimientos[UltimosMovimientos.size() - 1] == "Arr")
+        else if (left && right)
+        { // Blocked left and right
+            if (!LastMovements.empty())
+            { // if a movement has already been recorded:
+                if (LastMovements[LastMovements.size() - 1] == "Up")
                 {
-                    PosicionX--;
-                    UltimosMovimientos.emplace_back("Arr");
-                } // si el último movimiento fue hacia arriba entonces continua arriba
-                else if (UltimosMovimientos[UltimosMovimientos.size() - 1] == "Abj")
+                    PositionX--;
+                    LastMovements.emplace_back("Up");
+                } // if last movement was up then continue up
+                else if (LastMovements[LastMovements.size() - 1] == "Down")
                 {
-                    PosicionX++;
-                    UltimosMovimientos.emplace_back("Abj");
+                    PositionX++;
+                    LastMovements.emplace_back("Down");
                 }
             }
             else
-            { // si no se ha registrado ningun movimiento , toma una decision al azar y subela al vector
-                int opcion = rand() % 2;
-                if (opcion == 1)
+            { // if no movement has been recorded, make random decision and add to vector
+                int option = rand() % 2;
+                if (option == 1)
                 {
-                    PosicionX--;
-                    UltimosMovimientos.emplace_back("Arr");
+                    PositionX--;
+                    LastMovements.emplace_back("Up");
                 }
                 else
                 {
-                    PosicionX++;
-                    UltimosMovimientos.emplace_back("Abj");
+                    PositionX++;
+                    LastMovements.emplace_back("Down");
                 }
             }
         }
-        else if (der && arr)
-        { // Bloqueado por derecha y por arriba
-            if (!UltimosMovimientos.empty())
+        else if (right && up)
+        { // Blocked right and up
+            if (!LastMovements.empty())
             {
-                if (UltimosMovimientos[UltimosMovimientos.size() - 1] == "Der")
+                if (LastMovements[LastMovements.size() - 1] == "Right")
                 {
-                    PosicionX++;
-                    UltimosMovimientos.emplace_back("Abj");
+                    PositionX++;
+                    LastMovements.emplace_back("Down");
                 }
-                else if (UltimosMovimientos[UltimosMovimientos.size() - 1] == "Arr")
+                else if (LastMovements[LastMovements.size() - 1] == "Up")
                 {
-                    PosicionY--;
-                    UltimosMovimientos.emplace_back("Izq");
-                }
-            }
-            else
-            {
-                int opcion = rand() % 2;
-                if (opcion == 1)
-                {
-                    PosicionY--;
-                    UltimosMovimientos.emplace_back("Izq");
-                }
-                else
-                {
-                    PosicionX++;
-                    UltimosMovimientos.emplace_back("Abj");
-                }
-            }
-        }
-        else if (der && abj)
-        { // Bloqueado por derecha y por abajo
-            if (!UltimosMovimientos.empty())
-            {
-                if (UltimosMovimientos[UltimosMovimientos.size() - 1] == "Der")
-                {
-                    PosicionX--;
-                    UltimosMovimientos.emplace_back("Arr");
-                }
-                else if (UltimosMovimientos[UltimosMovimientos.size() - 1] == "Abj")
-                {
-                    PosicionY--;
-                    UltimosMovimientos.emplace_back("Izq");
+                    PositionY--;
+                    LastMovements.emplace_back("Left");
                 }
             }
             else
             {
-                int opcion = rand() % 2;
-                if (opcion == 1)
+                int option = rand() % 2;
+                if (option == 1)
                 {
-                    PosicionY--;
-                    UltimosMovimientos.emplace_back("Izq");
+                    PositionY--;
+                    LastMovements.emplace_back("Left");
                 }
                 else
                 {
-                    PosicionX--;
-                    UltimosMovimientos.emplace_back("Arr");
+                    PositionX++;
+                    LastMovements.emplace_back("Down");
                 }
             }
         }
-        else if (izq && arr)
-        { // Bloqueado por izquierda y por arriba
-            if (!UltimosMovimientos.empty())
+        else if (right && down)
+        { // Blocked right and down
+            if (!LastMovements.empty())
             {
-                if (UltimosMovimientos[UltimosMovimientos.size() - 1] == "Izq")
+                if (LastMovements[LastMovements.size() - 1] == "Right")
                 {
-                    PosicionX++;
-                    UltimosMovimientos.emplace_back("Abj");
+                    PositionX--;
+                    LastMovements.emplace_back("Up");
                 }
-                else if (UltimosMovimientos[UltimosMovimientos.size() - 1] == "Arr")
+                else if (LastMovements[LastMovements.size() - 1] == "Down")
                 {
-                    PosicionY++;
-                    UltimosMovimientos.emplace_back("Der");
+                    PositionY--;
+                    LastMovements.emplace_back("Left");
                 }
             }
-
             else
             {
-                int opcion = rand() % 2;
-                if (opcion == 1)
+                int option = rand() % 2;
+                if (option == 1)
                 {
-                    PosicionY++;
-                    UltimosMovimientos.emplace_back("Der");
+                    PositionY--;
+                    LastMovements.emplace_back("Left");
                 }
                 else
                 {
-                    PosicionX++;
-                    UltimosMovimientos.emplace_back("Abj");
+                    PositionX--;
+                    LastMovements.emplace_back("Up");
                 }
             }
         }
-        else if (izq && abj)
-        { // Bloqueado por izquierda y por abajo
-            if (!UltimosMovimientos.empty())
+        else if (left && up)
+        { // Blocked left and up
+            if (!LastMovements.empty())
             {
-                if (UltimosMovimientos[UltimosMovimientos.size() - 1] == "Izq")
+                if (LastMovements[LastMovements.size() - 1] == "Left")
                 {
-                    PosicionX--;
-                    UltimosMovimientos.emplace_back("Arr");
+                    PositionX++;
+                    LastMovements.emplace_back("Down");
                 }
-                else if (UltimosMovimientos[UltimosMovimientos.size() - 1] == "Abj")
+                else if (LastMovements[LastMovements.size() - 1] == "Up")
                 {
-                    PosicionY++;
-                    UltimosMovimientos.emplace_back("Der");
+                    PositionY++;
+                    LastMovements.emplace_back("Right");
                 }
             }
 
             else
             {
-                int opcion = rand() % 2;
-                if (opcion == 1)
+                int option = rand() % 2;
+                if (option == 1)
                 {
-                    PosicionY++;
-                    UltimosMovimientos.emplace_back("Der");
+                    PositionY++;
+                    LastMovements.emplace_back("Right");
                 }
                 else
                 {
-                    PosicionX--;
-                    UltimosMovimientos.emplace_back("Arr");
+                    PositionX++;
+                    LastMovements.emplace_back("Down");
                 }
             }
         }
-        else if (arr && abj)
-        { // Bloqueado por arriba y por abajo
-            if (!UltimosMovimientos.empty())
-            { // si el vector de ultimos movimientos no esta vacio entonces ejecuta lo de adentro
-                if (UltimosMovimientos[UltimosMovimientos.size() - 1] == "Izq")
-                {
-                    PosicionY--;
-                    UltimosMovimientos.emplace_back("Izq");
-                } // si ademas el ultimo movimiento viene por la izquierda entonces si o si siga por la izquierda
-                else if (UltimosMovimientos[UltimosMovimientos.size() - 1] == "Der")
-                {
-                    PosicionY++;
-                    UltimosMovimientos.emplace_back("Der");
-                } // si ademas el ultimo movimiento viene por la derecha encontonces si o si siga por la derecha
-            }
-
-            else
+        else if (left && down)
+        { // Blocked left and down
+            if (!LastMovements.empty())
             {
-                int opcion = rand() % 2;
-                if (opcion == 1)
+                if (LastMovements[LastMovements.size() - 1] == "Left")
                 {
-                    PosicionY++;
-                    UltimosMovimientos.emplace_back("Der");
+                    PositionX--;
+                    LastMovements.emplace_back("Up");
                 }
-                else
+                else if (LastMovements[LastMovements.size() - 1] == "Down")
                 {
-                    PosicionY--;
-                    UltimosMovimientos.emplace_back("Izq");
-                }
-            }
-        }
-
-        else if (arr)
-        { // Bloqueado por arriba: decidir entre bajar, izquierda o derecha
-            if (!UltimosMovimientos.empty())
-            {
-                if (UltimosMovimientos[UltimosMovimientos.size() - 1] == "Arr")
-                {
-                    int opcion = rand() % 2;
-                    if (opcion == 1)
-                    {
-                        PosicionY++;
-                        UltimosMovimientos.emplace_back("Der");
-                    }
-                    else
-                    {
-                        PosicionY--;
-                        UltimosMovimientos.emplace_back("Izq");
-                    }
-                }
-
-                else if (UltimosMovimientos[UltimosMovimientos.size() - 1] == "Der")
-                {
-                    int opcion = rand() % 2;
-                    if (opcion == 1)
-                    {
-                        PosicionY++;
-                        UltimosMovimientos.emplace_back("Der");
-                    }
-                    else
-                    {
-                        PosicionX++;
-                        UltimosMovimientos.emplace_back("Abj");
-                    }
-                }
-
-                else if (UltimosMovimientos[UltimosMovimientos.size() - 1] == "Izq")
-                {
-                    int opcion = rand() % 2;
-                    if (opcion == 1)
-                    {
-                        PosicionY--;
-                        UltimosMovimientos.emplace_back("Izq");
-                    }
-                    else
-                    {
-                        PosicionX++;
-                        UltimosMovimientos.emplace_back("Abj");
-                    }
-                }
-            }
-            else
-            {
-                int opcion = rand() % 3;
-                if (opcion == 1)
-                {
-                    PosicionX++;
-                    UltimosMovimientos.emplace_back("Abj");
-                }
-                else if (opcion == 2)
-                {
-                    PosicionY++;
-                    UltimosMovimientos.emplace_back("Der");
-                }
-                else
-                {
-                    PosicionY--;
-                    UltimosMovimientos.emplace_back("Izq");
-                }
-            }
-        }
-        else if (abj)
-        { // Bloqueado por abajo: decidir entre subir, izquierda o derecha
-            if (!UltimosMovimientos.empty())
-            {
-
-                if (UltimosMovimientos[UltimosMovimientos.size() - 1] == "Abj")
-                {
-                    int opcion = rand() % 2;
-                    if (opcion == 1)
-                    {
-                        PosicionY++;
-                        UltimosMovimientos.emplace_back("Der");
-                    }
-                    else
-                    {
-                        PosicionY--;
-                        UltimosMovimientos.emplace_back("Izq");
-                    }
-                }
-
-                else if (UltimosMovimientos[UltimosMovimientos.size() - 1] == "Der")
-                {
-                    int opcion = rand() % 2;
-                    if (opcion == 1)
-                    {
-                        PosicionY++;
-                        UltimosMovimientos.emplace_back("Der");
-                    }
-                    else
-                    {
-                        PosicionX--;
-                        UltimosMovimientos.emplace_back("Arr");
-                    }
-                }
-
-                else if (UltimosMovimientos[UltimosMovimientos.size() - 1] == "Izq")
-                {
-                    int opcion = rand() % 2;
-                    if (opcion == 1)
-                    {
-                        PosicionY--;
-                        UltimosMovimientos.emplace_back("Izq");
-                    }
-                    else
-                    {
-                        PosicionX--;
-                        UltimosMovimientos.emplace_back("Arr");
-                    }
+                    PositionY++;
+                    LastMovements.emplace_back("Right");
                 }
             }
 
             else
             {
-                int opcion = rand() % 3;
-                if (opcion == 1)
+                int option = rand() % 2;
+                if (option == 1)
                 {
-                    PosicionX--;
-                    UltimosMovimientos.emplace_back("Arr");
-                }
-                else if (opcion == 2)
-                {
-                    PosicionY--;
-                    UltimosMovimientos.emplace_back("Izq");
+                    PositionY++;
+                    LastMovements.emplace_back("Right");
                 }
                 else
                 {
-                    PosicionY++;
-                    UltimosMovimientos.emplace_back("Der");
+                    PositionX--;
+                    LastMovements.emplace_back("Up");
                 }
             }
         }
-        else if (der)
-        { // Bloqueado por derecha: decidir entre otras tres direcciones
-            if (!UltimosMovimientos.empty())
+        else if (up && down)
+        { // Blocked up and down
+            if (!LastMovements.empty())
+            { // if vector of last movements is not empty then execute inside
+                if (LastMovements[LastMovements.size() - 1] == "Left")
+                {
+                    PositionY--;
+                    LastMovements.emplace_back("Left");
+                } // if last movement comes from left then continue left
+                else if (LastMovements[LastMovements.size() - 1] == "Right")
+                {
+                    PositionY++;
+                    LastMovements.emplace_back("Right");
+                } // if last movement comes from right then continue right
+            }
+
+            else
             {
-                if (UltimosMovimientos[UltimosMovimientos.size() - 1] == "Arr")
+                int option = rand() % 2;
+                if (option == 1)
                 {
-                    int opcion = rand() % 2;
-                    if (opcion == 1)
-                    {
-                        PosicionY--;
-                        UltimosMovimientos.emplace_back("Izq");
-                    }
-                    else
-                    {
-                        PosicionX--;
-                        UltimosMovimientos.emplace_back("Arr");
-                    }
+                    PositionY++;
+                    LastMovements.emplace_back("Right");
                 }
-                else if (UltimosMovimientos[UltimosMovimientos.size() - 1] == "Abj")
+                else
                 {
-                    int opcion = rand() % 2;
-                    if (opcion == 1)
+                    PositionY--;
+                    LastMovements.emplace_back("Left");
+                }
+            }
+        }
+
+        else if (up)
+        { // Blocked up: decide between down, left or right
+            if (!LastMovements.empty())
+            {
+                if (LastMovements[LastMovements.size() - 1] == "Up")
+                {
+                    int option = rand() % 2;
+                    if (option == 1)
                     {
-                        PosicionY--;
-                        UltimosMovimientos.emplace_back("Izq");
+                        PositionY++;
+                        LastMovements.emplace_back("Right");
                     }
                     else
                     {
-                        PosicionX++;
-                        UltimosMovimientos.emplace_back("Abj");
+                        PositionY--;
+                        LastMovements.emplace_back("Left");
                     }
                 }
 
-                else if (UltimosMovimientos[UltimosMovimientos.size() - 1] == "Der")
+                else if (LastMovements[LastMovements.size() - 1] == "Right")
                 {
-                    int opcion = rand() % 2;
-                    if (opcion == 1)
+                    int option = rand() % 2;
+                    if (option == 1)
                     {
-                        PosicionX--;
-                        UltimosMovimientos.emplace_back("Arr");
+                        PositionY++;
+                        LastMovements.emplace_back("Right");
                     }
                     else
                     {
-                        PosicionX++;
-                        UltimosMovimientos.emplace_back("Abj");
+                        PositionX++;
+                        LastMovements.emplace_back("Down");
+                    }
+                }
+
+                else if (LastMovements[LastMovements.size() - 1] == "Left")
+                {
+                    int option = rand() % 2;
+                    if (option == 1)
+                    {
+                        PositionY--;
+                        LastMovements.emplace_back("Left");
+                    }
+                    else
+                    {
+                        PositionX++;
+                        LastMovements.emplace_back("Down");
+                    }
+                }
+            }
+            else
+            {
+                int option = rand() % 3;
+                if (option == 1)
+                {
+                    PositionX++;
+                    LastMovements.emplace_back("Down");
+                }
+                else if (option == 2)
+                {
+                    PositionY++;
+                    LastMovements.emplace_back("Right");
+                }
+                else
+                {
+                    PositionY--;
+                    LastMovements.emplace_back("Left");
+                }
+            }
+        }
+        else if (down)
+        { // Blocked down: decide between up, left or right
+            if (!LastMovements.empty())
+            {
+
+                if (LastMovements[LastMovements.size() - 1] == "Down")
+                {
+                    int option = rand() % 2;
+                    if (option == 1)
+                    {
+                        PositionY++;
+                        LastMovements.emplace_back("Right");
+                    }
+                    else
+                    {
+                        PositionY--;
+                        LastMovements.emplace_back("Left");
+                    }
+                }
+
+                else if (LastMovements[LastMovements.size() - 1] == "Right")
+                {
+                    int option = rand() % 2;
+                    if (option == 1)
+                    {
+                        PositionY++;
+                        LastMovements.emplace_back("Right");
+                    }
+                    else
+                    {
+                        PositionX--;
+                        LastMovements.emplace_back("Up");
+                    }
+                }
+
+                else if (LastMovements[LastMovements.size() - 1] == "Left")
+                {
+                    int option = rand() % 2;
+                    if (option == 1)
+                    {
+                        PositionY--;
+                        LastMovements.emplace_back("Left");
+                    }
+                    else
+                    {
+                        PositionX--;
+                        LastMovements.emplace_back("Up");
                     }
                 }
             }
 
             else
             {
-                int opcion = rand() % 3;
-                if (opcion == 1)
+                int option = rand() % 3;
+                if (option == 1)
                 {
-                    PosicionX++;
-                    UltimosMovimientos.emplace_back("Abj");
+                    PositionX--;
+                    LastMovements.emplace_back("Up");
                 }
-                else if (opcion == 2)
+                else if (option == 2)
                 {
-                    PosicionX--;
-                    UltimosMovimientos.emplace_back("Arr");
+                    PositionY--;
+                    LastMovements.emplace_back("Left");
                 }
                 else
                 {
-                    PosicionY--;
-                    UltimosMovimientos.emplace_back("Izq");
+                    PositionY++;
+                    LastMovements.emplace_back("Right");
                 }
             }
         }
-
-        else if (izq)
-        { // Bloqueado por izquierda: decidir entre otras tres direcciones
-            if (!UltimosMovimientos.empty())
+        else if (right)
+        { // Blocked right: decide between other three directions
+            if (!LastMovements.empty())
             {
-                if (UltimosMovimientos[UltimosMovimientos.size() - 1] == "Abj")
+                if (LastMovements[LastMovements.size() - 1] == "Up")
                 {
-                    int opcion = rand() % 2;
-                    if (opcion == 1)
+                    int option = rand() % 2;
+                    if (option == 1)
                     {
-                        PosicionY++;
-                        UltimosMovimientos.emplace_back("Der");
+                        PositionY--;
+                        LastMovements.emplace_back("Left");
                     }
                     else
                     {
-                        PosicionX++;
-                        UltimosMovimientos.emplace_back("Abj");
+                        PositionX--;
+                        LastMovements.emplace_back("Up");
+                    }
+                }
+                else if (LastMovements[LastMovements.size() - 1] == "Down")
+                {
+                    int option = rand() % 2;
+                    if (option == 1)
+                    {
+                        PositionY--;
+                        LastMovements.emplace_back("Left");
+                    }
+                    else
+                    {
+                        PositionX++;
+                        LastMovements.emplace_back("Down");
                     }
                 }
 
-                else if (UltimosMovimientos[UltimosMovimientos.size() - 1] == "Arr")
+                else if (LastMovements[LastMovements.size() - 1] == "Right")
                 {
-                    int opcion = rand() % 2;
-                    if (opcion == 1)
+                    int option = rand() % 2;
+                    if (option == 1)
                     {
-                        PosicionY++;
-                        UltimosMovimientos.emplace_back("Der");
+                        PositionX--;
+                        LastMovements.emplace_back("Up");
                     }
                     else
                     {
-                        PosicionX--;
-                        UltimosMovimientos.emplace_back("Arr");
-                    }
-                }
-
-                else if (UltimosMovimientos[UltimosMovimientos.size() - 1] == "Izq")
-                {
-                    int opcion = rand() % 2;
-                    if (opcion == 1)
-                    {
-                        PosicionX--;
-                        UltimosMovimientos.emplace_back("Arr");
-                    }
-                    else
-                    {
-                        PosicionX++;
-                        UltimosMovimientos.emplace_back("Abj");
+                        PositionX++;
+                        LastMovements.emplace_back("Down");
                     }
                 }
             }
 
             else
             {
-                int opcion = rand() % 3;
-                if (opcion == 1)
+                int option = rand() % 3;
+                if (option == 1)
                 {
-                    PosicionX++;
-                    UltimosMovimientos.emplace_back("Abj");
+                    PositionX++;
+                    LastMovements.emplace_back("Down");
                 }
-                else if (opcion == 2)
+                else if (option == 2)
                 {
-                    PosicionX--;
-                    UltimosMovimientos.emplace_back("Arr");
+                    PositionX--;
+                    LastMovements.emplace_back("Up");
                 }
                 else
                 {
-                    PosicionY++;
-                    UltimosMovimientos.emplace_back("Der");
+                    PositionY--;
+                    LastMovements.emplace_back("Left");
+                }
+            }
+        }
+
+        else if (left)
+        { // Blocked left: decide between other three directions
+            if (!LastMovements.empty())
+            {
+                if (LastMovements[LastMovements.size() - 1] == "Down")
+                {
+                    int option = rand() % 2;
+                    if (option == 1)
+                    {
+                        PositionY++;
+                        LastMovements.emplace_back("Right");
+                    }
+                    else
+                    {
+                        PositionX++;
+                        LastMovements.emplace_back("Down");
+                    }
+                }
+
+                else if (LastMovements[LastMovements.size() - 1] == "Up")
+                {
+                    int option = rand() % 2;
+                    if (option == 1)
+                    {
+                        PositionY++;
+                        LastMovements.emplace_back("Right");
+                    }
+                    else
+                    {
+                        PositionX--;
+                        LastMovements.emplace_back("Up");
+                    }
+                }
+
+                else if (LastMovements[LastMovements.size() - 1] == "Left")
+                {
+                    int option = rand() % 2;
+                    if (option == 1)
+                    {
+                        PositionX--;
+                        LastMovements.emplace_back("Up");
+                    }
+                    else
+                    {
+                        PositionX++;
+                        LastMovements.emplace_back("Down");
+                    }
+                }
+            }
+
+            else
+            {
+                int option = rand() % 3;
+                if (option == 1)
+                {
+                    PositionX++;
+                    LastMovements.emplace_back("Down");
+                }
+                else if (option == 2)
+                {
+                    PositionX--;
+                    LastMovements.emplace_back("Up");
+                }
+                else
+                {
+                    PositionY++;
+                    LastMovements.emplace_back("Right");
                 }
             }
         }
 
         else
-        { // el avatar no esta bloqueado alrededor , por ende puede tomar cualquier decision
-            if (!UltimosMovimientos.empty())
+        { // avatar is not blocked around, so can make any decision
+            if (!LastMovements.empty())
             {
-                if (UltimosMovimientos[UltimosMovimientos.size() - 1] == "Abj")
+                if (LastMovements[LastMovements.size() - 1] == "Down")
                 {
-                    int opcion = rand() % 3;
-                    if (opcion == 1)
+                    int option = rand() % 3;
+                    if (option == 1)
                     {
-                        PosicionY++;
-                        UltimosMovimientos.emplace_back("Der");
+                        PositionY++;
+                        LastMovements.emplace_back("Right");
                     }
-                    else if (opcion == 2)
+                    else if (option == 2)
                     {
-                        PosicionX++;
-                        UltimosMovimientos.emplace_back("Abj");
+                        PositionX++;
+                        LastMovements.emplace_back("Down");
                     }
                     else
                     {
-                        PosicionY--;
-                        UltimosMovimientos.emplace_back("Izq");
+                        PositionY--;
+                        LastMovements.emplace_back("Left");
                     }
                 }
 
-                else if (UltimosMovimientos[UltimosMovimientos.size() - 1] == "Arr")
+                else if (LastMovements[LastMovements.size() - 1] == "Up")
                 {
-                    int opcion = rand() % 3;
-                    if (opcion == 1)
+                    int option = rand() % 3;
+                    if (option == 1)
                     {
-                        PosicionY++;
-                        UltimosMovimientos.emplace_back("Der");
+                        PositionY++;
+                        LastMovements.emplace_back("Right");
                     }
-                    else if (opcion == 2)
+                    else if (option == 2)
                     {
-                        PosicionX--;
-                        UltimosMovimientos.emplace_back("Arr");
+                        PositionX--;
+                        LastMovements.emplace_back("Up");
                     }
                     else
                     {
-                        PosicionY--;
-                        UltimosMovimientos.emplace_back("Izq");
+                        PositionY--;
+                        LastMovements.emplace_back("Left");
                     }
                 }
 
-                else if (UltimosMovimientos[UltimosMovimientos.size() - 1] == "Der")
+                else if (LastMovements[LastMovements.size() - 1] == "Right")
                 {
-                    int opcion = rand() % 3;
-                    if (opcion == 1)
+                    int option = rand() % 3;
+                    if (option == 1)
                     {
-                        PosicionY++;
-                        UltimosMovimientos.emplace_back("Der");
+                        PositionY++;
+                        LastMovements.emplace_back("Right");
                     }
-                    else if (opcion == 2)
+                    else if (option == 2)
                     {
-                        PosicionX--;
-                        UltimosMovimientos.emplace_back("Arr");
+                        PositionX--;
+                        LastMovements.emplace_back("Up");
                     }
                     else
                     {
-                        PosicionX++;
-                        UltimosMovimientos.emplace_back("Abj");
+                        PositionX++;
+                        LastMovements.emplace_back("Down");
                     }
                 }
 
-                else if (UltimosMovimientos[UltimosMovimientos.size() - 1] == "Izq")
+                else if (LastMovements[LastMovements.size() - 1] == "Left")
                 {
-                    int opcion = rand() % 3;
-                    if (opcion == 1)
+                    int option = rand() % 3;
+                    if (option == 1)
                     {
-                        PosicionY--;
-                        UltimosMovimientos.emplace_back("Izq");
+                        PositionY--;
+                        LastMovements.emplace_back("Left");
                     }
-                    else if (opcion == 2)
+                    else if (option == 2)
                     {
-                        PosicionX--;
-                        UltimosMovimientos.emplace_back("Arr");
+                        PositionX--;
+                        LastMovements.emplace_back("Up");
                     }
                     else
                     {
-                        PosicionX++;
-                        UltimosMovimientos.emplace_back("Abj");
+                        PositionX++;
+                        LastMovements.emplace_back("Down");
                     }
                 }
             }
             else
             {
-                int opcion = rand() % 4;
-                if (opcion == 1)
+                int option = rand() % 4;
+                if (option == 1)
                 {
-                    PosicionX++;
-                    UltimosMovimientos.emplace_back("Abj");
+                    PositionX++;
+                    LastMovements.emplace_back("Down");
                 }
-                else if (opcion == 2)
+                else if (option == 2)
                 {
-                    PosicionX--;
-                    UltimosMovimientos.emplace_back("Arr");
+                    PositionX--;
+                    LastMovements.emplace_back("Up");
                 }
-                else if (opcion == 3)
+                else if (option == 3)
                 {
-                    PosicionY++;
-                    UltimosMovimientos.emplace_back("Der");
+                    PositionY++;
+                    LastMovements.emplace_back("Right");
                 }
                 else
                 {
-                    PosicionY--;
-                    UltimosMovimientos.emplace_back("Izq");
+                    PositionY--;
+                    LastMovements.emplace_back("Left");
                 }
             }
         }
-        // ACTUALIZAR VISUALIZACIÓN después de cada movimiento
-        vista.IncrementarPasos();
-        vista.DibujarTablero(matriz);
-        vista.Delay(500); // Medio segundo entre movimientos
+        view.IncrementSteps();
+        view.DrawBoard(matrix);
+        view.Delay(500);
     }
-    // Mostrar mensaje de victoria
-    vista.MostrarVictoria();
-    return "COMPLETADO";
+    view.ShowVictory();
 }
 
-// ====== Funciones de detección individuales ======
-
-bool Avatar::DetectarVacioDerecha(int (&matriz)[10][10])
+bool Avatar::DetectEmptyRight(int (&matrix)[10][10])
 {
-    if (PosicionY < 9)
+    if (PositionY + 1 > 9)
     {
-        return matriz[PosicionX][PosicionY + 1] == 0;
+        return true;
     }
-    return true; // fuera del tablero = obstáculo
+    else if (matrix[PositionX][PositionY + 1] == 0)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
-bool Avatar::DetectarVacioIzquierda(int (&matriz)[10][10])
+bool Avatar::DetectEmptyLeft(int (&matrix)[10][10])
 {
-    if (PosicionY > 0)
+    if (PositionY - 1 < 0)
     {
-        return matriz[PosicionX][PosicionY - 1] == 0;
+        return true;
     }
-    return true;
+    else if (matrix[PositionX][PositionY - 1] == 0)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
-bool Avatar::DetectarVacioArriba(int (&matriz)[10][10])
+bool Avatar::DetectEmptyUp(int (&matrix)[10][10])
 {
-    if (PosicionX > 0)
+    if (PositionX - 1 < 0)
     {
-        return matriz[PosicionX - 1][PosicionY] == 0;
+        return true;
     }
-    return true;
+    else if (matrix[PositionX - 1][PositionY] == 0)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
-bool Avatar::DetectarVacioAbajo(int (&matriz)[10][10])
+bool Avatar::DetectEmptyDown(int (&matrix)[10][10])
 {
-    if (PosicionX < 9)
+    if (PositionX + 1 > 9)
     {
-        return matriz[PosicionX + 1][PosicionY] == 0;
+        return true;
     }
-    return true;
+    else if (matrix[PositionX + 1][PositionY] == 0)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }

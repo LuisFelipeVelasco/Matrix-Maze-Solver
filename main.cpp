@@ -1,70 +1,61 @@
 #include <iostream>
 #include <string>
-#include "Tablero.h"
+#include "Board.h"
 #include "Avatar.h"
 #include <exception>
 #include <cassert>
 /*
-Proyecto: Paso-de-Mensajes-Main
+Project: Matrix-Maze-Solver
 
-Curso: Fundamentos de Programación Orientada a Objetos (FPOO)
-
-Autores:
-Felipe velasco - 2517245
-Jerónimo imbachi - 2517760
-Leonardo rosero - 2518313-3743
-Alejandro velez - 2521169-3743
-Julio Cesar Urbano Noguera- 2517931
-
-Resumen:
-Este programa es un algoritmo cuyo protagonista es un objeto de la clase avatar y que recorre las coordenadas de una matriz que representa un laberinto.
-Los Vacios y Espacios sin salida se representan como 0 y los Espacios Libres como 1
-Meta: Llegar a la salida ubicada en la celda [9,9]
+Summary:
+This program is an algorithm whose protagonist is an object of the Avatar class and traverses
+the coordinates of a matrix that represents a maze. Empty spaces and dead ends are represented 
+as 0 and Free Spaces as 1. Goal: Reach the exit located at cell [9,9]
 */
 
 int main()
 {
-    std::cout << "===== DEBUGGER INICIADO =====" << std::endl;
+    std::cout << "===== DEBUGGER STARTED =====" << std::endl;
 
-    // === TABLERO ===
-    std::cout << "[DEBUG] Creando objeto Tablero (Laberinto)..." << std::endl;
-    Tablero Laberinto;
-    std::cout << "[DEBUG] Definiendo posición inicial..." << std::endl;
-    Laberinto.Definirposicion();
-    int PosicionX = Laberinto.GetTableroX();
-    int PosicionY = Laberinto.GetTableroY();
-    std::cout << "[INFO] Posición inicial obtenida: X=" << PosicionX << " , Y=" << PosicionY << std::endl;
-    // Validación con assert
-    assert(PosicionX >= 0 && "ERROR: PosicionX no puede ser negativa");
-    assert(PosicionY >= 0 && "ERROR: PosicionY no puede ser negativa");
+    // === BOARD ===
+    std::cout << "[DEBUG] Creating Board object (Maze)..." << std::endl;
+    Board Maze;
+    std::cout << "[DEBUG] Defining initial position..." << std::endl;
+    Maze.DefinePosition();
+    int PositionX = Maze.GetBoardX();
+    int PositionY = Maze.GetBoardY();
+    std::cout << "[INFO] Initial position obtained: X=" << PositionX << " , Y=" << PositionY << std::endl;
+    // Validation with assert
+    assert(PositionX >= 0 && "ERROR: PositionX cannot be negative");
+    assert(PositionY >= 0 && "ERROR: PositionY cannot be negative");
     // === AVATAR ===
-    std::cout << "\n[DEBUG] Creando Avatar 'Smart'..." << std::endl;
-    Avatar AgenteI("Smart", PosicionX, PosicionY);
-    std::cout << "[DEBUG] Mostrando posición inicial del Avatar..." << std::endl;
+    std::cout << "\n[DEBUG] Creating Avatar 'Smart'..." << std::endl;
+    Avatar IntelligentAgent("Smart", PositionX, PositionY);
+    std::cout << "[DEBUG] Showing initial position of Avatar..." << std::endl;
     
-    // Verificar consistencia
-    assert(AgenteI.GetPositionX() == PosicionX && "ERROR: Posicion X del Avatar no coincide con la del Tablero");
-    assert(AgenteI.GetPositionY() == PosicionY && "ERROR: Posicion Y del Avatar no coincide con la del Tablero");
+    // Verify consistency
+    assert(IntelligentAgent.GetPositionX() == PositionX && "ERROR: Avatar X Position does not match Board position");
+    assert(IntelligentAgent.GetPositionY() == PositionY && "ERROR: Avatar Y Position does not match Board position");
 
-    // === MOVIMIENTO ===
-    std::cout << "\n[DEBUG] Inicializando módulo de Movimiento..." << std::endl;
-    std::cout << "[DEBUG] Ejecutando método Moverse()..." << std::endl;
+    // === MOVEMENT ===
+    std::cout << "\n[DEBUG] Initializing Movement module..." << std::endl;
+    std::cout << "[DEBUG] Executing Move() method..." << std::endl;
     try
     {
-        AgenteI.Moverse();
-        std::cout << "[OK] Movimiento ejecutado sin errores." << std::endl;
+        IntelligentAgent.Move();
+        std::cout << "[OK] Movement executed without errors." << std::endl;
     }
     catch (const std::exception &e)
     {
-        std::cout << "[EXCEPTION] Error durante el movimiento: " << e.what() << std::endl;
+        std::cout << "[EXCEPTION] Error during movement: " << e.what() << std::endl;
     }
     catch (...)
     {
-        std::cout << "[EXCEPTION] Error desconocido durante el movimiento." << std::endl;
+        std::cout << "[EXCEPTION] Unknown error during movement." << std::endl;
     }
 
     // === FINAL ===
-    std::cout << "\n===== DEBUGGER FINALIZADO =====" << std::endl;
-    AgenteI.Moverse();
+    std::cout << "\n===== DEBUGGER FINISHED =====" << std::endl;
+    IntelligentAgent.Move();
     return 0;
 }

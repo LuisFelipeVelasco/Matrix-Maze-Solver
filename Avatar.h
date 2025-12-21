@@ -1,39 +1,39 @@
-#ifndef PROYECTO_AGENTE_INTELIGENTE_MOVIMIENTO_H
-#define PROYECTO_AGENTE_INTELIGENTE_MOVIMIENTO_H
+#ifndef MATRIX_MAZE_SOLVER_AVATAR_H
+#define MATRIX_MAZE_SOLVER_AVATAR_H
 
 #include <string>
 #include <vector>
 
 /*
 ===============================================================================
-                                MOVIMIENTO CRC
+                                MOVEMENT CRC
 ===============================================================================
-Nombre de la clase:Movimiento
-Responsabilidades:
-    - Movimiento del soldado (arriba, abajo, izquierda, derecha)
-Colaboradores:
+Class Name: Avatar
+Responsibilities:
+    - Movement of the agent (up, down, left, right)
+Collaborators:
     - Avatar
-    - Tablero
+    - Board
 ===============================================================================
 */
 class Avatar {
 private:
-    std::string Nombre{};
-    int& PosicionX;
-    int& PosicionY;
-    std::vector<std::string> UltimosMovimientos{}; // vector que permite registrar los últimos movimientos realizados por el Avatar
+    std::string Name{};
+    int& PositionX;
+    int& PositionY;
+    std::vector<std::string> LastMovements{}; // vector that allows recording the last movements performed by the Avatar
 
 public:
-    Avatar( std::string nombre, int& posicionX ,  int& posicionY); // Paso de mensaje por referencia
+    Avatar( std::string name, int& positionX ,  int& positionY); // Message passing by reference
 
     int GetPositionX();
     int GetPositionY();
-    // Metodos de deteccion de vacios para tomar una decision
-    bool DetectarVacioDerecha(int (&matriz)[10][10]);
-    bool DetectarVacioIzquierda(int (&matriz)[10][10]);
-    bool DetectarVacioArriba(int (&matriz)[10][10]);
-    bool DetectarVacioAbajo(int (&matriz)[10][10]);
-    //Metodo de movimiento
-    std::string Moverse();
+    // Methods for detecting empty spaces to make a decision
+    bool DetectEmptyRight(int (&matrix)[10][10]);
+    bool DetectEmptyLeft(int (&matrix)[10][10]);
+    bool DetectEmptyUp(int (&matrix)[10][10]);
+    bool DetectEmptyDown(int (&matrix)[10][10]);
+    // Movement method
+    void Move();
 };
-#endif //PASO_MENSAJES_MOVIMIENTO_H
+#endif //MATRIX_MAZE_SOLVER_AVATAR_H

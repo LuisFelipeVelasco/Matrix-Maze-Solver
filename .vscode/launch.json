@@ -20,7 +20,7 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "build", // nombre del task en tasks.json
+            "preLaunchTask": "build", // name of the task in tasks.json
             "logging": {
                 "engineLogging": false
             }
@@ -29,10 +29,10 @@
             "name": "Attach to gdbserver (remote)",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/main", // Ruta al ejecutable dentro del contenedor
+            "program": "${workspaceFolder}/main", // root of the executable in the container
             "cwd": "${workspaceFolder}",
             "MIMode": "gdb",
-            "miDebuggerServerAddress": "localhost:2345", // si usas gdbserver
+            "miDebuggerServerAddress": "localhost:2345", // in case of use gdb server
             "miDebuggerPath": "/usr/bin/gdb",
             "externalConsole": false
         }
