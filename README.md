@@ -50,7 +50,6 @@ In VS code:
 
 3. Press F5 (VS Code runs launch.json → tasks.json → Makefile → make all) 
 
-4. Press F5 (VS Code runs launch.json → ${workspaceFolder}/main)
 
 # Purpose of the Project 🎯
 
