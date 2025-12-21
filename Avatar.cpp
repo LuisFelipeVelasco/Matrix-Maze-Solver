@@ -667,66 +667,32 @@ void Avatar::Move()
     view.ShowVictory();
 }
 
+// ====== Individual Detection Functions ======
+
 bool Avatar::DetectEmptyRight(int (&matrix)[10][10])
 {
-    if (PositionY + 1 > 9)
-    {
-        return true;
-    }
-    else if (matrix[PositionX][PositionY + 1] == 0)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    if (PositionY + 1 > 9) return true;
+    else if (matrix[PositionX][PositionY + 1] == 0) return true;
+    else return false;
 }
 
 bool Avatar::DetectEmptyLeft(int (&matrix)[10][10])
 {
-    if (PositionY - 1 < 0)
-    {
-        return true;
-    }
-    else if (matrix[PositionX][PositionY - 1] == 0)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    if (PositionY - 1 < 0) return true;
+    else if (matrix[PositionX][PositionY - 1] == 0) return true;
+    else return false;
 }
 
 bool Avatar::DetectEmptyUp(int (&matrix)[10][10])
 {
-    if (PositionX - 1 < 0)
-    {
-        return true;
-    }
-    else if (matrix[PositionX - 1][PositionY] == 0)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    if (PositionX - 1 < 0)return true;
+    else if (matrix[PositionX - 1][PositionY] == 0) return true;
+    else return false;
 }
 
 bool Avatar::DetectEmptyDown(int (&matrix)[10][10])
 {
-    if (PositionX + 1 > 9)
-    {
-        return true;
-    }
-    else if (matrix[PositionX + 1][PositionY] == 0)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    if (PositionX + 1 > 9) return true;
+    else if (matrix[PositionX + 1][PositionY] == 0) return true;
+    else return false;
 }
