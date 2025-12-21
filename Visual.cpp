@@ -66,7 +66,7 @@ void Visual::ShowHeader() {
         std::cout << "\n==== MAZE - INTELLIGENT AGENT ====\n\n";
     } else {
         std::cout << "╔══════════════════════════════════════════════════════╗\n";
-        std::cout << "║         MAZE - INTELLIGENT AGENT                    ║\n";
+        std::cout << "║                MATRIX-MAZE-SOLVER                    ║\n";
         std::cout << "║                 SMART IN ACTION                      ║\n";
         std::cout << "╚══════════════════════════════════════════════════════╝\n\n";
     }
@@ -91,11 +91,11 @@ void Visual::ShowLegend() {
         std::cout << "\n  [S]=Agent  [X]=Wall  [.] = Corridor  [*]=Exit\n\n";
     } else {
         std::cout << "\n  ┌─────────────── LEGEND ───────────────┐\n";
-        std::cout << "  │  \033[1;32mS\033[0m = Agent (Intelligent)         │\n";
-        std::cout << "  │  \033[1;31mX\033[0m = Wall or Dead End            │\n";
-        std::cout << "  │  \033[0;37m·\033[0m = Corridor (Available Path)   │\n";
-        std::cout << "  │  \033[1;33m★\033[0m = Exit (Goal [9][9])          │\n";
-        std::cout << "  └───────────────────────────────────────┘\n\n";
+        std::cout << "  │  \033[1;32mS\033[0m = Agent (Intelligent)             │\n";
+        std::cout << "  │  \033[1;31mX\033[0m = Wall or Dead End                │\n";
+        std::cout << "  │  \033[0;37m·\033[0m = Corridor (Available Path)       │\n";
+        std::cout << "  │  \033[1;33m★\033[0m = Exit (Goal [9][9])              │\n";
+        std::cout << "  └──────────────────────────────────────┘\n\n";
     }
 }
 
@@ -141,9 +141,9 @@ void Visual::DrawBoard(int (&matrix)[10][10]) {
     for (int j = 0; j < 10; j++) std::cout << j << "  ";
     std::cout << "\n";
 
-    std::cout << "\n  ┌─────────────── STATUS ───────────────┐\n";
-    std::cout << "  │  Current Position: [\033[1;36m" << *PositionX << "\033[0m][\033[1;36m" << *PositionY << "\033[0m]       │\n";
-    std::cout << "  │  Moves Performed: \033[1;35m" << StepCounter << "\033[0m             │\n";
+    std::cout << "\n  ┌─────────────── STATUS ────────────────┐\n";
+    std::cout << "  │  Current Position: [\033[1;36m" << *PositionX << "\033[0m][\033[1;36m" << *PositionY << "\033[0m]             │\n";
+    std::cout << "  │  Moves Performed: \033[1;35m" << StepCounter << "\033[0m                   │\n";
     std::cout << "  └───────────────────────────────────────┘\n";
 
     ShowLegend();
@@ -165,9 +165,9 @@ void Visual::ShowVictory() {
     } else {
         std::cout << "\n\n";
         std::cout << "  ╔═══════════════════════════════════════════════════════╗\n";
-        std::cout << "  ║          \033[1;32mMISSION ACCOMPLISHED!\033[0m             ║\n";
-        std::cout << "  ║          Final Position: [\033[1;33m9\033[0m][\033[1;33m9\033[0m] \033[1;33m★\033[0m                ║\n";
-        std::cout << "  ║          Total Moves: \033[1;35m" << StepCounter << "\033[0m                      ║\n";
+        std::cout << "  ║          \033[1;32mMISSION ACCOMPLISHED!\033[0m                        ║\n";
+        std::cout << "  ║          Final Position: [\033[1;33m9\033[0m][\033[1;33m9\033[0m] \033[1;33m★\033[0m                     ║\n";
+        std::cout << "  ║          Total Moves: \033[1;35m" << StepCounter << "\033[0m                               ║\n";
         std::cout << "  ╚═══════════════════════════════════════════════════════╝\n";
         std::cout << "\n\n";
     }
