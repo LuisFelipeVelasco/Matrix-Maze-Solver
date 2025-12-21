@@ -38,7 +38,7 @@ Extensión Dev Containers
 steps:
 
 ```bash
-https://github.com/LuisFelipeVelasco/Matrix-Maze-Solver.git
+git clone https://github.com/LuisFelipeVelasco/Matrix-Maze-Solver.git
 cd Matrix-Maze-Solver
 code .
 ```
