@@ -54,8 +54,5 @@ int main()
         std::cout << "[EXCEPTION] Unknown error during movement." << std::endl;
     }
 
-    // === FINAL ===
-    std::cout << "\n===== DEBUGGER FINISHED =====" << std::endl;
-    IntelligentAgent.Move();
     return 0;
 }
