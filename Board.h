@@ -21,13 +21,10 @@ private:
 public:
     Board();
     void DefinePosition();
-    void DefinePositionX(); // when the game starts
-    void DefinePositionY(); // when the game starts
+    int ChoseNumberPosition(int PositionVariable);
     int GetBoardX();
     int GetBoardY();
     static int (&GetMatrixStatic())[10][10]; // getter for matrix to read it in movement.cpp
-
-
 };
 
 #endif //MATRIX_MAZE_SOLVER_BOARD_H

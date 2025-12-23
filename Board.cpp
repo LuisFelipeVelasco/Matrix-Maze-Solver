@@ -139,34 +139,22 @@ Board::Board()
 void Board::DefinePosition()
 { // Define the initial position of the player
 
-    int aux = 0;
-    while (aux == 0 || (BoardX == 9 && BoardY == 9))
+    int ValueofCell= 0;
+    while (ValueofCell == 0 || (BoardX == 9 && BoardY == 9))
     {
-        DefinePositionX();
-        DefinePositionY();
-        aux = matrix[BoardX][BoardY];
+        BoardX=ChoseNumberPosition(BoardX);
+        BoardY=ChoseNumberPosition(BoardY);
+        ValueofCell = matrix[BoardX][BoardY];
     }
 }
 
-void Board::DefinePositionX()
-{
-    // Initialize the seed (only done once)
-    BoardX = rand() % 10; // Generate number between 0 and 9
-}
+int Board::ChoseNumberPosition(int PositionVariable){ 
+    PositionVariable=rand()% 10;
+    return PositionVariable;
+} // Generate number between 0 and 9
 
-void Board::DefinePositionY()
-{
-    BoardY = rand() % 10;
-}
-
-int Board::GetBoardX()
-{
-    return BoardX;
-}
-int Board::GetBoardY()
-{
-    return BoardY;
-}
+int Board::GetBoardX(){return BoardX;}
+int Board::GetBoardY(){return BoardY;}
 
 int Board::matrix[10][10] = { // static matrix belonging to the class
     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -180,7 +168,4 @@ int Board::matrix[10][10] = { // static matrix belonging to the class
     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
 
-int (&Board::GetMatrixStatic())[10][10]
-{
-    return matrix;
-}
+int (&Board::GetMatrixStatic())[10][10]{return matrix;}

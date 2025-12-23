@@ -25,7 +25,7 @@ clean:
 # GoogleTest build
 TEST_BIN = test_runner
 TEST_SRC = tests/test_main.cpp
-TEST_DEPS = ClaseA.cpp 
+TEST_DEPS = Visual.cpp Avatar.cpp Board.cpp 
 
 google-test: $(TEST_BIN)
 	./$(TEST_BIN)
