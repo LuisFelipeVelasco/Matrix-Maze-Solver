@@ -18,22 +18,37 @@ A clean and educational C++ maze-solving project that models a grid-based labyri
 # Project Structure
 ```text
 Matrix-Maze-Solver/
-│── Avatar.h / Avatar.cpp        # Avatar logic and position handling
-│── Movimiento.h / Movimiento.cpp # Movement rules and validation
-│── Tablero.h / Tablero.cpp      # Maze (board) representation
-│── Visual.h / Visual.cpp        # Maze visualization
-│── main.cpp                     # Program entry point
-│── CMakeLists.txt               # Build configuration
+│
+├── Avatar.h                 # Defines the avatar entity and its attributes
+├── Avatar.cpp               # Implements avatar behavior and movement
+│
+├── Board.h                  # Maze (matrix) representation and rules
+├── Board.cpp                # Implements board logic and validations
+│
+├── Visual.h                 # Interface for maze visualization
+├── Visual.cpp               # Console-based rendering of the maze
+│
+├── main.cpp                 # Program entry point
+│
+├── Makefile                 # Build automation using Make
+├── README.md                # Project documentation
+│
+├── tests/                   # Unit and integration tests
+│   └── test_main.cpp        # Main test file
+│
+├── .vscode/                 # VS Code configuration
+│   ├── launch.json
+│   └── tasks.json
+│
+├── .devcontainer/           # Development container configuration
+│   ├── devcontainer.json
+│   └── Dockerfile
 ```
 
 # Build & Run
 Requirements:
 
-Docker Desktop
-
-VS code 
-
-Extensión Dev Containers
+Docker Desktop ,VS code , Extensión Dev Containers
 
 steps:
 
@@ -50,6 +65,11 @@ In VS code:
 
 3. Press F5 (VS Code runs launch.json → tasks.json → Makefile → make all) 
 
+# Run Tests:
+
+```bash
+Make google-test
+```
 
 # Purpose of the Project 🎯
 
