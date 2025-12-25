@@ -24,6 +24,45 @@ Avatar::Avatar(std::string name , int &x, int &y) : Name (name ) ,PositionX(x), 
 int Avatar::GetPositionX(){return PositionX;}
 int Avatar::GetPositionY(){return PositionY;}
 
+bool Avatar::DetectEmptyRight(int (&matrix)[10][10])
+{
+    if (PositionY + 1 > 9) return true;
+    else if (matrix[PositionX][PositionY + 1] == 0) return true;
+    else return false;
+}
+
+bool Avatar::DetectEmptyLeft(int (&matrix)[10][10])
+{
+    if (PositionY - 1 < 0) return true;
+    else if (matrix[PositionX][PositionY - 1] == 0) return true;
+    else return false;
+}
+
+bool Avatar::DetectEmptyUp(int (&matrix)[10][10])
+{
+    if (PositionX - 1 < 0)return true;
+    else if (matrix[PositionX - 1][PositionY] == 0) return true;
+    else return false;
+}
+
+bool Avatar::DetectEmptyDown(int (&matrix)[10][10])
+{
+    if (PositionX + 1 > 9) return true;
+    else if (matrix[PositionX + 1][PositionY] == 0) return true;
+    else return false;
+}
+
+int Avatar::countBlockedDirections(bool& right,bool& left,bool& up,bool& down){
+    int numberOfBlockCells=0;
+    if (right) numberOfBlockCells++;
+    if (left) numberOfBlockCells++; 
+    if (up) numberOfBlockCells++; 
+    if (down) numberOfBlockCells++; 
+    return numberOfBlockCells;
+     
+}
+
+
 
 void Avatar::SolveTheMaze()
 {
@@ -49,6 +88,8 @@ void Avatar::SolveTheMaze()
     if(numberOfBlockCells==3){
             matrix[PositionX][PositionY]=0;
             moveIfOnlyOneDirectionAvailable(right,left,up,down);
+            if (!LastMovements.empty())LastMovements.pop_back(); // if movements have already been made, delete last movement            
+
         }
 
        // moveIfOnlyOneDirectionAvailable(right,left,up,down,matrix);
@@ -635,71 +676,28 @@ void Avatar::SolveTheMaze()
 
 // ====== Individual Detection Functions ======
 
-bool Avatar::DetectEmptyRight(int (&matrix)[10][10])
-{
-    if (PositionY + 1 > 9) return true;
-    else if (matrix[PositionX][PositionY + 1] == 0) return true;
-    else return false;
-}
 
-bool Avatar::DetectEmptyLeft(int (&matrix)[10][10])
-{
-    if (PositionY - 1 < 0) return true;
-    else if (matrix[PositionX][PositionY - 1] == 0) return true;
-    else return false;
-}
-
-bool Avatar::DetectEmptyUp(int (&matrix)[10][10])
-{
-    if (PositionX - 1 < 0)return true;
-    else if (matrix[PositionX - 1][PositionY] == 0) return true;
-    else return false;
-}
-
-bool Avatar::DetectEmptyDown(int (&matrix)[10][10])
-{
-    if (PositionX + 1 > 9) return true;
-    else if (matrix[PositionX + 1][PositionY] == 0) return true;
-    else return false;
-}
 
 
 void Avatar::moveIfOnlyOneDirectionAvailable(bool& right,bool& left,bool& up,bool& down){
     if (right && left && up)
         {            
             PositionX++;// Blocked right, left and up: move down
-            undoLastMoveAndBlockCell();            
         }
     else if (right && left && down)
         {
             PositionX--;// Blocked right, left and down: move up
-            undoLastMoveAndBlockCell();            
         }
     else if (right && down && up)
         {
             PositionY--;// Blocked right, down and up: move left
-            undoLastMoveAndBlockCell();
         }
     else if (left && down && up)
         {
             PositionY++;// Blocked left, down and up: move right
-            undoLastMoveAndBlockCell();            
         }
 
 }
 
-void Avatar::undoLastMoveAndBlockCell(){
-    
-    if (!LastMovements.empty())LastMovements.pop_back(); // if movements have already been made, delete last movement
-            
-}
 
-int Avatar::countBlockedDirections(bool& right,bool& left,bool& up,bool& down){
-    int numberOfBlockCells=0;
-    if (right) numberOfBlockCells++;
-    if (left) numberOfBlockCells++; 
-    if (up) numberOfBlockCells++; 
-    if (down) numberOfBlockCells++; 
-    return numberOfBlockCells;
-     
-}
+
