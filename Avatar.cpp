@@ -101,92 +101,7 @@ void Avatar::SolveTheMaze()
             if (!LastMovements.empty())LastMovements.pop_back();           
         }
 
-        else if (left && right) // Blocked left and right
-        { 
-            if (!LastMovements.empty())
-            {   
-                // if a movement has already been recorded:
-                if (GetLastMoveDirection() == "Up") Move("Up");      // if last movement was up then continue up
-                else Move("Down");                                  // if last movement wasn´t up then continue down
-            }
-            else
-            { // if no movement has been recorded, make random decision and add to vector
-                int option = rand() % 2;
-                if (option == 1) Move("Up");
-                else Move("Down");
-            }
-        }
-        else if (right && up) // Blocked right and up
-        { 
-            if (!LastMovements.empty())
-            {
-                if (GetLastMoveDirection() == "Right") Move("Down");
-                else Move("Left");
-            }
-            else
-            {
-                int option = rand() % 2;
-                if (option == 1) Move("Down");
-                else Move("Left");
-            }
-        }
-        else if (right && down) // Blocked right and down
-        { 
-            if (!LastMovements.empty())
-            {
-                if (GetLastMoveDirection() == "Right") Move("Up");
-                else Move("Left");
-            }
-            else
-            {
-                int option = rand() % 2;
-                if (option == 1) Move("Up");
-                else Move("Left");
-            }
-        }
-        else if (left && up) // Blocked left and up
-        { 
-            if (!LastMovements.empty())
-            {
-                if (GetLastMoveDirection() == "Left") Move("Down");
-                else Move("Right");
-            }
-            else
-            {
-                int option = rand() % 2;
-                if (option == 1) Move("Right");
-                else Move("Down");
-            }
-        }
-        else if (left && down) // Blocked left and down
-        { 
-            if (!LastMovements.empty())
-            {
-                if (GetLastMoveDirection() == "Left") Move("Up");
-                else Move("Right");
-            }
-            else
-            {
-                int option = rand() % 2;
-                if (option == 1) Move("Up");
-                else Move("Right");
-
-            }
-        }
-        else if (up && down) // Blocked up and down
-        { 
-            if (!LastMovements.empty())
-            { 
-                if (GetLastMoveDirection() == "Left") Move("Left");
-                else Move("Right");
-            }
-            else
-            {
-                int option = rand() % 2;
-                if (option == 1) Move("Left");
-                else Move("Right");
-            }
-        }
+        else if(numberOfBlockCells==2) MoveIfTwoDirectionsAvaliable(right,left,up,down);
 
         else if (up) // Blocked up: decide between down, left or right
         { 
@@ -383,6 +298,45 @@ void Avatar::MoveIfOnlyOneDirectionAvailable(bool& right,bool& left,bool& up,boo
     else if (right && left && down)Move("Up");      // Blocked right, left and down: move up
     else if (right && down && up) Move("Left");     // Blocked right, down and up: move left
     else if (left && down && up)  Move("Right");    // Blocked left, down and up: move right
+}
+
+void Avatar::MoveIfTwoDirectionsAvailable(bool& right,bool& left,bool& up,bool& down)
+{
+    int option=rand() % 2; // Chose 1 or 2
+    
+    if (left && right) // Blocked left and right
+    { 
+        // if a movement has already been recorded:
+        if (!LastMovements.empty()) Move(GetLastMoveDirection()=="Up" ? "Up": "Down");  //if last movement was up then continue up , else down
+        else Move(option==1 ? "Up" : "Down");    // if no movement has been recorded, make random decision
+
+    }
+    else if (right && up) // Blocked right and up
+    { 
+        if (!LastMovements.empty()) Move(GetLastMoveDirection()=="Right" ? "Down" : "Left");        
+        else Move(option==1 ? "Down" : "Left");
+    }
+    else if (right && down) // Blocked right and down
+    { 
+        if (!LastMovements.empty()) Move(GetLastMoveDirection()=="Right"? "Up": "Left");
+        else Move(option==1 ? "Up" : "Left" );
+    }
+    else if (left && up) // Blocked left and up
+    { 
+        if (!LastMovements.empty()) Move(GetLastMoveDirection()=="Left" ? "Down" : "Right");
+        else Move(option==1 ? "Down" : "Right");
+
+    }
+    else if (left && down) // Blocked left and down
+    { 
+        if (!LastMovements.empty()) Move(GetLastMoveDirection()=="Left" ? "Up" : "Right");
+        else Move(option==1 ? "Up" : "Right");
+    }
+    else if (up && down) // Blocked up and down
+    { 
+        if (!LastMovements.empty()) Move(GetLastMoveDirection()=="Left" ? "Left" : "Right");
+        else Move(option==1 ? "Left" : "Right");
+    }
 }
 
 void Avatar::Move(std::string Direction)
