@@ -11,7 +11,7 @@ TEST(TEST_MATRIX_MAZE_SOLVER,FINALPOSITION){
     int PositionX=Maze.GetBoardX();
     int PositionY=Maze.GetBoardY();
     Avatar Avatar1("Smart",PositionX,PositionY);
-    Avatar1.Move();
+    Avatar1.SolveTheMaze();
     EXPECT_EQ(Avatar1.GetPositionX(),9);
     EXPECT_EQ(Avatar1.GetPositionY(),9);
 }

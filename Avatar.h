@@ -35,7 +35,8 @@ public:
     bool DetectEmptyDown(int (&matrix)[10][10]);
     // Movement method
     void SolveTheMaze();
-    void moveIfOnlyOneDirectionAvailable(bool& right,bool& left,bool& up,bool& down,int (&matrix)[10][10] );
-  
+    void moveIfOnlyOneDirectionAvailable(bool& right,bool& left,bool& up,bool& down);
+    void undoLastMoveAndBlockCell();
+    int countBlockedDirections(bool& right,bool& left,bool& up,bool& down);
 };
 #endif //MATRIX_MAZE_SOLVER_AVATAR_H

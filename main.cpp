@@ -20,6 +20,8 @@ int main()
     Maze.DefinePosition();
     int PositionX = Maze.GetBoardX();
     int PositionY = Maze.GetBoardY();
+    //int PositionX=9;
+    //int PositionY=10;
     Avatar IntelligentAgent("Smart", PositionX, PositionY);
     IntelligentAgent.SolveTheMaze();
     return 0;

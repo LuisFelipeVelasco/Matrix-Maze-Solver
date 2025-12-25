@@ -38,93 +38,59 @@ void Avatar::SolveTheMaze()
     view.Delay(2000);            // 2 second pause at start
 
     while (PositionY != 9 || PositionX != 9)
-    { // execute until reaching exit
+    {   // execute until reaching exit
         // Variables right,left,up,down to detect path direction around avatar
         bool right = DetectEmptyRight(matrix);
         bool left = DetectEmptyLeft(matrix);
         bool up = DetectEmptyUp(matrix);
         bool down = DetectEmptyDown(matrix);
 
-        if (right && left && up)
-        {
-            // Blocked right, left and up: move down
-            matrix[PositionX][PositionY] = 0;
-            PositionX++;
-            if (!LastMovements.empty())
-            {                                  // if movements have already been made
-                LastMovements.pop_back(); // delete last movement
-            }
-        }
-        else if (right && left && down)
-        {
-            // Blocked right, left and down: move up
-            matrix[PositionX][PositionY] = 0;
-            PositionX--;
-            if (!LastMovements.empty())
-            {
-                LastMovements.pop_back();
-            }
-        }
-        else if (right && down && up)
-        {
-            // Blocked right, down and up: move left
-            matrix[PositionX][PositionY] = 0;
-            PositionY--;
-            if (!LastMovements.empty())
-            {
-                LastMovements.pop_back();
-            }
-        }
-        else if (left && down && up)
-        {
-            // Blocked left, down and up: move right
-            matrix[PositionX][PositionY] = 0;
-            PositionY++;
-            if (!LastMovements.empty())
-            {
-                LastMovements.pop_back();
-            }
+        int numberOfBlockCells=countBlockedDirections(right,left,up,down);
+    if(numberOfBlockCells==3){
+            matrix[PositionX][PositionY]=0;
+            moveIfOnlyOneDirectionAvailable(right,left,up,down);
         }
 
-        else if (left && right)
+       // moveIfOnlyOneDirectionAvailable(right,left,up,down,matrix);
+      else if (left && right)
         { // Blocked left and right
             if (!LastMovements.empty())
-            { // if a movement has already been recorded:
-                if (LastMovements[LastMovements.size() - 1] == "Up")
-                {
+                { // if a movement has already been recorded:
+                    if (LastMovements[LastMovements.size() - 1] == "Up")
+                        {
                     PositionX--;
                     LastMovements.emplace_back("Up");
-                } // if last movement was up then continue up
+                        } // if last movement was up then continue up
                 else if (LastMovements[LastMovements.size() - 1] == "Down")
-                {
+                    {
                     PositionX++;
                     LastMovements.emplace_back("Down");
-                }
+                    }
             }
             else
-            { // if no movement has been recorded, make random decision and add to vector
+                { // if no movement has been recorded, make random decision and add to vector
                 int option = rand() % 2;
                 if (option == 1)
-                {
+                    {
                     PositionX--;
                     LastMovements.emplace_back("Up");
-                }
+                    }
                 else
-                {
+                    {
                     PositionX++;
                     LastMovements.emplace_back("Down");
-                }
+                    }
             }
         }
-        else if (right && up)
+    else if (right && up)
         { // Blocked right and up
             if (!LastMovements.empty())
             {
                 if (LastMovements[LastMovements.size() - 1] == "Right")
-                {
-                    PositionX++;
-                    LastMovements.emplace_back("Down");
-                }
+                    {
+                          PositionX++;
+                        LastMovements.emplace_back("Down");
+                    }
                 else if (LastMovements[LastMovements.size() - 1] == "Up")
                 {
                     PositionY--;
@@ -146,7 +112,7 @@ void Avatar::SolveTheMaze()
                 }
             }
         }
-        else if (right && down)
+    else if (right && down)
         { // Blocked right and down
             if (!LastMovements.empty())
             {
@@ -176,7 +142,7 @@ void Avatar::SolveTheMaze()
                 }
             }
         }
-        else if (left && up)
+    else if (left && up)
         { // Blocked left and up
             if (!LastMovements.empty())
             {
@@ -207,7 +173,7 @@ void Avatar::SolveTheMaze()
                 }
             }
         }
-        else if (left && down)
+    else if (left && down)
         { // Blocked left and down
             if (!LastMovements.empty())
             {
@@ -238,7 +204,7 @@ void Avatar::SolveTheMaze()
                 }
             }
         }
-        else if (up && down)
+    else if (up && down)
         { // Blocked up and down
             if (!LastMovements.empty())
             { // if vector of last movements is not empty then execute inside
@@ -270,7 +236,7 @@ void Avatar::SolveTheMaze()
             }
         }
 
-        else if (up)
+    else if (up)
         { // Blocked up: decide between down, left or right
             if (!LastMovements.empty())
             {
@@ -339,7 +305,7 @@ void Avatar::SolveTheMaze()
                 }
             }
         }
-        else if (down)
+    else if (down)
         { // Blocked down: decide between up, left or right
             if (!LastMovements.empty())
             {
@@ -410,7 +376,7 @@ void Avatar::SolveTheMaze()
                 }
             }
         }
-        else if (right)
+    else if (right)
         { // Blocked right: decide between other three directions
             if (!LastMovements.empty())
             {
@@ -480,7 +446,7 @@ void Avatar::SolveTheMaze()
             }
         }
 
-        else if (left)
+    else if (left)
         { // Blocked left: decide between other three directions
             if (!LastMovements.empty())
             {
@@ -551,7 +517,7 @@ void Avatar::SolveTheMaze()
             }
         }
 
-        else
+    else
         { // avatar is not blocked around, so can make any decision
             if (!LastMovements.empty())
             {
@@ -697,47 +663,43 @@ bool Avatar::DetectEmptyDown(int (&matrix)[10][10])
     else return false;
 }
 
-void Avatar::moveIfOnlyOneDirectionAvailable(bool& right,bool& left,bool& up,bool& down,int (&matrix)[10][10]){
+
+void Avatar::moveIfOnlyOneDirectionAvailable(bool& right,bool& left,bool& up,bool& down){
     if (right && left && up)
-        {
-            // Blocked right, left and up: move down
-            matrix[PositionX][PositionY] = 0;
-            PositionX++;
-            if (!LastMovements.empty())
-            {                                  // if movements have already been made
-                LastMovements.pop_back(); // delete last movement
-            }
+        {            
+            PositionX++;// Blocked right, left and up: move down
+            undoLastMoveAndBlockCell();            
         }
-        else if (right && left && down)
+    else if (right && left && down)
         {
-            // Blocked right, left and down: move up
-            matrix[PositionX][PositionY] = 0;
-            PositionX--;
-            if (!LastMovements.empty())
-            {
-                LastMovements.pop_back();
-            }
+            PositionX--;// Blocked right, left and down: move up
+            undoLastMoveAndBlockCell();            
         }
-        else if (right && down && up)
+    else if (right && down && up)
         {
-            // Blocked right, down and up: move left
-            matrix[PositionX][PositionY] = 0;
-            PositionY--;
-            if (!LastMovements.empty())
-            {
-                LastMovements.pop_back();
-            }
+            PositionY--;// Blocked right, down and up: move left
+            undoLastMoveAndBlockCell();
         }
-        else if (left && down && up)
+    else if (left && down && up)
         {
-            // Blocked left, down and up: move right
-            matrix[PositionX][PositionY] = 0;
-            PositionY++;
-            if (!LastMovements.empty())
-            {
-                LastMovements.pop_back();
-            }
+            PositionY++;// Blocked left, down and up: move right
+            undoLastMoveAndBlockCell();            
         }
 
 }
 
+void Avatar::undoLastMoveAndBlockCell(){
+    
+    if (!LastMovements.empty())LastMovements.pop_back(); // if movements have already been made, delete last movement
+            
+}
+
+int Avatar::countBlockedDirections(bool& right,bool& left,bool& up,bool& down){
+    int numberOfBlockCells=0;
+    if (right) numberOfBlockCells++;
+    if (left) numberOfBlockCells++; 
+    if (up) numberOfBlockCells++; 
+    if (down) numberOfBlockCells++; 
+    return numberOfBlockCells;
+     
+}
