@@ -21,8 +21,14 @@ Demonstrates:
 
 Avatar::Avatar(std::string name , int &x, int &y) : Name (name ) ,PositionX(x), PositionY(y) {}
 
+// ========== Getter Methods =============
+
 int Avatar::GetPositionX(){return PositionX;}
 int Avatar::GetPositionY(){return PositionY;}
+std::string Avatar::GetLastMoveDirection(){return LastMovements[LastMovements.size()-1] ;}
+
+
+// ====== Individual Detection Functions ======
 
 bool Avatar::DetectEmptyRight(int (&matrix)[10][10])
 {
@@ -52,619 +58,316 @@ bool Avatar::DetectEmptyDown(int (&matrix)[10][10])
     else return false;
 }
 
-int Avatar::countBlockedDirections(bool& right,bool& left,bool& up,bool& down){
+//==============================================================
+
+int Avatar::CountBlockedDirections(){
+    int (&matrix)[10][10] = Board::GetMatrixStatic();
     int numberOfBlockCells=0;
-    if (right) numberOfBlockCells++;
-    if (left) numberOfBlockCells++; 
-    if (up) numberOfBlockCells++; 
-    if (down) numberOfBlockCells++; 
-    return numberOfBlockCells;
-     
+    if (DetectEmptyRight(matrix)) numberOfBlockCells++;
+    if (DetectEmptyLeft(matrix)) numberOfBlockCells++; 
+    if (DetectEmptyUp(matrix)) numberOfBlockCells++; 
+    if (DetectEmptyDown(matrix)) numberOfBlockCells++; 
+    return numberOfBlockCells;     
 }
-
-
 
 void Avatar::SolveTheMaze()
 {
     // Create Visual object passing pointers to positions
     Visual view(&PositionX, &PositionY);
-
     // Get reference to board matrix
     int (&matrix)[10][10] = Board::GetMatrixStatic();
-
     // Show initial state of maze
     view.DrawBoard(matrix);
-    view.Delay(2000);            // 2 second pause at start
-
-    while (PositionY != 9 || PositionX != 9)
-    {   // execute until reaching exit
+    // 2 second pause at start
+    view.Delay(2000);            
+    // execute until reaching exit
+    while (PositionY != 9 || PositionX != 9)  
+    {  
         // Variables right,left,up,down to detect path direction around avatar
         bool right = DetectEmptyRight(matrix);
         bool left = DetectEmptyLeft(matrix);
         bool up = DetectEmptyUp(matrix);
         bool down = DetectEmptyDown(matrix);
 
-        int numberOfBlockCells=countBlockedDirections(right,left,up,down);
-    if(numberOfBlockCells==3){
-            matrix[PositionX][PositionY]=0;
-            moveIfOnlyOneDirectionAvailable(right,left,up,down);
-            if (!LastMovements.empty())LastMovements.pop_back(); // if movements have already been made, delete last movement            
+        int numberOfBlockCells=CountBlockedDirections();
 
+        //if the avatar is in a DeadEnd
+        if(numberOfBlockCells==3)
+        {
+            //Block the cell like a DeadEnd
+            matrix[PositionX][PositionY]=0; 
+            MoveIfOnlyOneDirectionAvailable(right,left,up,down);
+            // if movements have already been made, delete last movement  
+            if (!LastMovements.empty())LastMovements.pop_back();           
         }
 
-       // moveIfOnlyOneDirectionAvailable(right,left,up,down,matrix);
-      else if (left && right)
-        { // Blocked left and right
+        else if (left && right) // Blocked left and right
+        { 
             if (!LastMovements.empty())
-                { // if a movement has already been recorded:
-                    if (LastMovements[LastMovements.size() - 1] == "Up")
-                        {
-                    PositionX--;
-                    LastMovements.emplace_back("Up");
-                        } // if last movement was up then continue up
-                else if (LastMovements[LastMovements.size() - 1] == "Down")
-                    {
-                    PositionX++;
-                    LastMovements.emplace_back("Down");
-                    }
+            {   
+                // if a movement has already been recorded:
+                if (GetLastMoveDirection() == "Up") Move("Up");      // if last movement was up then continue up
+                else Move("Down");                                  // if last movement wasn´t up then continue down
             }
             else
-                { // if no movement has been recorded, make random decision and add to vector
+            { // if no movement has been recorded, make random decision and add to vector
                 int option = rand() % 2;
-                if (option == 1)
-                    {
-                    PositionX--;
-                    LastMovements.emplace_back("Up");
-                    }
-                else
-                    {
-                    PositionX++;
-                    LastMovements.emplace_back("Down");
-                    }
+                if (option == 1) Move("Up");
+                else Move("Down");
             }
         }
-    else if (right && up)
-        { // Blocked right and up
+        else if (right && up) // Blocked right and up
+        { 
             if (!LastMovements.empty())
             {
-                if (LastMovements[LastMovements.size() - 1] == "Right")
-                    {
-                          PositionX++;
-                        LastMovements.emplace_back("Down");
-                    }
-                else if (LastMovements[LastMovements.size() - 1] == "Up")
-                {
-                    PositionY--;
-                    LastMovements.emplace_back("Left");
-                }
+                if (GetLastMoveDirection() == "Right") Move("Down");
+                else Move("Left");
             }
             else
             {
                 int option = rand() % 2;
-                if (option == 1)
-                {
-                    PositionY--;
-                    LastMovements.emplace_back("Left");
-                }
-                else
-                {
-                    PositionX++;
-                    LastMovements.emplace_back("Down");
-                }
+                if (option == 1) Move("Down");
+                else Move("Left");
             }
         }
-    else if (right && down)
-        { // Blocked right and down
+        else if (right && down) // Blocked right and down
+        { 
             if (!LastMovements.empty())
             {
-                if (LastMovements[LastMovements.size() - 1] == "Right")
-                {
-                    PositionX--;
-                    LastMovements.emplace_back("Up");
-                }
-                else if (LastMovements[LastMovements.size() - 1] == "Down")
-                {
-                    PositionY--;
-                    LastMovements.emplace_back("Left");
-                }
+                if (GetLastMoveDirection() == "Right") Move("Up");
+                else Move("Left");
             }
             else
             {
                 int option = rand() % 2;
-                if (option == 1)
-                {
-                    PositionY--;
-                    LastMovements.emplace_back("Left");
-                }
-                else
-                {
-                    PositionX--;
-                    LastMovements.emplace_back("Up");
-                }
+                if (option == 1) Move("Up");
+                else Move("Left");
             }
         }
-    else if (left && up)
-        { // Blocked left and up
+        else if (left && up) // Blocked left and up
+        { 
             if (!LastMovements.empty())
             {
-                if (LastMovements[LastMovements.size() - 1] == "Left")
-                {
-                    PositionX++;
-                    LastMovements.emplace_back("Down");
-                }
-                else if (LastMovements[LastMovements.size() - 1] == "Up")
-                {
-                    PositionY++;
-                    LastMovements.emplace_back("Right");
-                }
+                if (GetLastMoveDirection() == "Left") Move("Down");
+                else Move("Right");
             }
-
             else
             {
                 int option = rand() % 2;
-                if (option == 1)
-                {
-                    PositionY++;
-                    LastMovements.emplace_back("Right");
-                }
-                else
-                {
-                    PositionX++;
-                    LastMovements.emplace_back("Down");
-                }
+                if (option == 1) Move("Right");
+                else Move("Down");
             }
         }
-    else if (left && down)
-        { // Blocked left and down
+        else if (left && down) // Blocked left and down
+        { 
             if (!LastMovements.empty())
             {
-                if (LastMovements[LastMovements.size() - 1] == "Left")
-                {
-                    PositionX--;
-                    LastMovements.emplace_back("Up");
-                }
-                else if (LastMovements[LastMovements.size() - 1] == "Down")
-                {
-                    PositionY++;
-                    LastMovements.emplace_back("Right");
-                }
+                if (GetLastMoveDirection() == "Left") Move("Up");
+                else Move("Right");
             }
-
             else
             {
                 int option = rand() % 2;
-                if (option == 1)
-                {
-                    PositionY++;
-                    LastMovements.emplace_back("Right");
-                }
-                else
-                {
-                    PositionX--;
-                    LastMovements.emplace_back("Up");
-                }
+                if (option == 1) Move("Up");
+                else Move("Right");
+
             }
         }
-    else if (up && down)
-        { // Blocked up and down
+        else if (up && down) // Blocked up and down
+        { 
             if (!LastMovements.empty())
-            { // if vector of last movements is not empty then execute inside
-                if (LastMovements[LastMovements.size() - 1] == "Left")
-                {
-                    PositionY--;
-                    LastMovements.emplace_back("Left");
-                } // if last movement comes from left then continue left
-                else if (LastMovements[LastMovements.size() - 1] == "Right")
-                {
-                    PositionY++;
-                    LastMovements.emplace_back("Right");
-                } // if last movement comes from right then continue right
+            { 
+                if (GetLastMoveDirection() == "Left") Move("Left");
+                else Move("Right");
             }
-
             else
             {
                 int option = rand() % 2;
-                if (option == 1)
-                {
-                    PositionY++;
-                    LastMovements.emplace_back("Right");
-                }
-                else
-                {
-                    PositionY--;
-                    LastMovements.emplace_back("Left");
-                }
+                if (option == 1) Move("Left");
+                else Move("Right");
             }
         }
 
-    else if (up)
-        { // Blocked up: decide between down, left or right
+        else if (up) // Blocked up: decide between down, left or right
+        { 
             if (!LastMovements.empty())
             {
-                if (LastMovements[LastMovements.size() - 1] == "Up")
+                if (GetLastMoveDirection() == "Up")
                 {
                     int option = rand() % 2;
-                    if (option == 1)
-                    {
-                        PositionY++;
-                        LastMovements.emplace_back("Right");
-                    }
-                    else
-                    {
-                        PositionY--;
-                        LastMovements.emplace_back("Left");
-                    }
+                    if (option == 1) Move("Right");
+                    else Move("Left");
                 }
 
-                else if (LastMovements[LastMovements.size() - 1] == "Right")
+                else if (GetLastMoveDirection() == "Right")
                 {
                     int option = rand() % 2;
-                    if (option == 1)
-                    {
-                        PositionY++;
-                        LastMovements.emplace_back("Right");
-                    }
-                    else
-                    {
-                        PositionX++;
-                        LastMovements.emplace_back("Down");
-                    }
+                    if (option == 1) Move("Right");
+                    else Move("Down");
                 }
 
-                else if (LastMovements[LastMovements.size() - 1] == "Left")
+                else if (GetLastMoveDirection() == "Left")
                 {
                     int option = rand() % 2;
-                    if (option == 1)
-                    {
-                        PositionY--;
-                        LastMovements.emplace_back("Left");
-                    }
-                    else
-                    {
-                        PositionX++;
-                        LastMovements.emplace_back("Down");
-                    }
+                    if (option == 1) Move("Left");
+                    else Move("Down");
                 }
             }
             else
             {
                 int option = rand() % 3;
-                if (option == 1)
-                {
-                    PositionX++;
-                    LastMovements.emplace_back("Down");
-                }
-                else if (option == 2)
-                {
-                    PositionY++;
-                    LastMovements.emplace_back("Right");
-                }
-                else
-                {
-                    PositionY--;
-                    LastMovements.emplace_back("Left");
-                }
+                if (option == 1) Move("Down");
+                else if (option == 2) Move("Right");
+                else Move("Left");
             }
         }
-    else if (down)
-        { // Blocked down: decide between up, left or right
+        else if (down) // Blocked down: decide between up, left or right
+        { 
             if (!LastMovements.empty())
             {
 
-                if (LastMovements[LastMovements.size() - 1] == "Down")
+                if (GetLastMoveDirection() == "Down")
                 {
                     int option = rand() % 2;
-                    if (option == 1)
-                    {
-                        PositionY++;
-                        LastMovements.emplace_back("Right");
-                    }
-                    else
-                    {
-                        PositionY--;
-                        LastMovements.emplace_back("Left");
-                    }
+                    if (option == 1) Move("Right");
+                    else Move("Left");
                 }
 
-                else if (LastMovements[LastMovements.size() - 1] == "Right")
+                else if (GetLastMoveDirection() == "Right")
                 {
                     int option = rand() % 2;
-                    if (option == 1)
-                    {
-                        PositionY++;
-                        LastMovements.emplace_back("Right");
-                    }
-                    else
-                    {
-                        PositionX--;
-                        LastMovements.emplace_back("Up");
-                    }
+                    if (option == 1) Move("Right");
+                    else Move("Up");
                 }
 
-                else if (LastMovements[LastMovements.size() - 1] == "Left")
+                else if (GetLastMoveDirection() == "Left")
                 {
                     int option = rand() % 2;
-                    if (option == 1)
-                    {
-                        PositionY--;
-                        LastMovements.emplace_back("Left");
-                    }
-                    else
-                    {
-                        PositionX--;
-                        LastMovements.emplace_back("Up");
-                    }
+                    if (option == 1) Move("Left");
+                    else Move("Up");
+                }
+            }
+            else
+            {
+                int option = rand() % 3;
+                if (option == 1) Move("Up");
+                else if (option == 2) Move("Left");
+                else Move("Right");
+            }
+        }
+        else if (right) // Blocked right: decide between other three directions
+        { 
+            if (!LastMovements.empty())
+            {
+                if (GetLastMoveDirection() == "Up")
+                {
+                    int option = rand() % 2;
+                    if (option == 1) Move("Left");
+                    else Move("Up");
+                }
+                else if (GetLastMoveDirection() == "Down")
+                {
+                    int option = rand() % 2;
+                    if (option == 1) Move("Left");
+                    else Move("Down");
+                }
+
+                else if (GetLastMoveDirection() == "Right")
+                {
+                    int option = rand() % 2;
+                    if (option == 1) Move("Up");
+                    else Move("Down");
+                }
+            }
+            else
+            {
+                int option = rand() % 3;
+                if (option == 1) Move("Down");
+                else if (option == 2) Move("Up");
+                else Move("Left");
+            }
+        }
+
+        else if (left) // Blocked left: decide between other three directions
+        { 
+            if (!LastMovements.empty())
+            {
+                if (GetLastMoveDirection() == "Down") 
+                {
+                    int option = rand() % 2;
+                    if (option == 1) Move("Right");
+                    else Move("Down");
+
+                }
+
+                else if (GetLastMoveDirection() == "Up")
+                {
+                    int option = rand() % 2;
+                    if (option == 1) Move("Right");
+                    else Move("Up");
+                }
+
+                else if (GetLastMoveDirection() == "Left")
+                {
+                    int option = rand() % 2;
+                    if (option == 1) Move("Up");
+                    else Move("Down");
                 }
             }
 
             else
             {
                 int option = rand() % 3;
-                if (option == 1)
-                {
-                    PositionX--;
-                    LastMovements.emplace_back("Up");
-                }
-                else if (option == 2)
-                {
-                    PositionY--;
-                    LastMovements.emplace_back("Left");
-                }
-                else
-                {
-                    PositionY++;
-                    LastMovements.emplace_back("Right");
-                }
-            }
-        }
-    else if (right)
-        { // Blocked right: decide between other three directions
-            if (!LastMovements.empty())
-            {
-                if (LastMovements[LastMovements.size() - 1] == "Up")
-                {
-                    int option = rand() % 2;
-                    if (option == 1)
-                    {
-                        PositionY--;
-                        LastMovements.emplace_back("Left");
-                    }
-                    else
-                    {
-                        PositionX--;
-                        LastMovements.emplace_back("Up");
-                    }
-                }
-                else if (LastMovements[LastMovements.size() - 1] == "Down")
-                {
-                    int option = rand() % 2;
-                    if (option == 1)
-                    {
-                        PositionY--;
-                        LastMovements.emplace_back("Left");
-                    }
-                    else
-                    {
-                        PositionX++;
-                        LastMovements.emplace_back("Down");
-                    }
-                }
-
-                else if (LastMovements[LastMovements.size() - 1] == "Right")
-                {
-                    int option = rand() % 2;
-                    if (option == 1)
-                    {
-                        PositionX--;
-                        LastMovements.emplace_back("Up");
-                    }
-                    else
-                    {
-                        PositionX++;
-                        LastMovements.emplace_back("Down");
-                    }
-                }
-            }
-
-            else
-            {
-                int option = rand() % 3;
-                if (option == 1)
-                {
-                    PositionX++;
-                    LastMovements.emplace_back("Down");
-                }
-                else if (option == 2)
-                {
-                    PositionX--;
-                    LastMovements.emplace_back("Up");
-                }
-                else
-                {
-                    PositionY--;
-                    LastMovements.emplace_back("Left");
-                }
+                if (option == 1) Move("Down");
+                else if (option == 2) Move("Up");
+                else Move("Right");
             }
         }
 
-    else if (left)
-        { // Blocked left: decide between other three directions
+        else // avatar is not blocked around, so can make any decision
+        { 
             if (!LastMovements.empty())
             {
-                if (LastMovements[LastMovements.size() - 1] == "Down")
-                {
-                    int option = rand() % 2;
-                    if (option == 1)
-                    {
-                        PositionY++;
-                        LastMovements.emplace_back("Right");
-                    }
-                    else
-                    {
-                        PositionX++;
-                        LastMovements.emplace_back("Down");
-                    }
-                }
-
-                else if (LastMovements[LastMovements.size() - 1] == "Up")
-                {
-                    int option = rand() % 2;
-                    if (option == 1)
-                    {
-                        PositionY++;
-                        LastMovements.emplace_back("Right");
-                    }
-                    else
-                    {
-                        PositionX--;
-                        LastMovements.emplace_back("Up");
-                    }
-                }
-
-                else if (LastMovements[LastMovements.size() - 1] == "Left")
-                {
-                    int option = rand() % 2;
-                    if (option == 1)
-                    {
-                        PositionX--;
-                        LastMovements.emplace_back("Up");
-                    }
-                    else
-                    {
-                        PositionX++;
-                        LastMovements.emplace_back("Down");
-                    }
-                }
-            }
-
-            else
-            {
-                int option = rand() % 3;
-                if (option == 1)
-                {
-                    PositionX++;
-                    LastMovements.emplace_back("Down");
-                }
-                else if (option == 2)
-                {
-                    PositionX--;
-                    LastMovements.emplace_back("Up");
-                }
-                else
-                {
-                    PositionY++;
-                    LastMovements.emplace_back("Right");
-                }
-            }
-        }
-
-    else
-        { // avatar is not blocked around, so can make any decision
-            if (!LastMovements.empty())
-            {
-                if (LastMovements[LastMovements.size() - 1] == "Down")
+                if (GetLastMoveDirection() == "Down")
                 {
                     int option = rand() % 3;
-                    if (option == 1)
-                    {
-                        PositionY++;
-                        LastMovements.emplace_back("Right");
-                    }
-                    else if (option == 2)
-                    {
-                        PositionX++;
-                        LastMovements.emplace_back("Down");
-                    }
-                    else
-                    {
-                        PositionY--;
-                        LastMovements.emplace_back("Left");
-                    }
+                    if (option == 1) Move("Right");
+                    else if (option == 2) Move("Down");
+                    else Move("Left");
+
                 }
 
-                else if (LastMovements[LastMovements.size() - 1] == "Up")
+                else if (GetLastMoveDirection() == "Up")
                 {
                     int option = rand() % 3;
-                    if (option == 1)
-                    {
-                        PositionY++;
-                        LastMovements.emplace_back("Right");
-                    }
-                    else if (option == 2)
-                    {
-                        PositionX--;
-                        LastMovements.emplace_back("Up");
-                    }
-                    else
-                    {
-                        PositionY--;
-                        LastMovements.emplace_back("Left");
-                    }
+                    if (option == 1) Move("Right");
+                    else if (option == 2) Move("Up");
+                    else Move("Left");
                 }
 
-                else if (LastMovements[LastMovements.size() - 1] == "Right")
+                else if (GetLastMoveDirection() == "Right")
                 {
                     int option = rand() % 3;
-                    if (option == 1)
-                    {
-                        PositionY++;
-                        LastMovements.emplace_back("Right");
-                    }
-                    else if (option == 2)
-                    {
-                        PositionX--;
-                        LastMovements.emplace_back("Up");
-                    }
-                    else
-                    {
-                        PositionX++;
-                        LastMovements.emplace_back("Down");
-                    }
+                    if (option == 1) Move("Right");
+                    else if (option == 2) Move("Up");
+                    else Move("Down");
                 }
 
-                else if (LastMovements[LastMovements.size() - 1] == "Left")
+                else if (GetLastMoveDirection() == "Left")
                 {
                     int option = rand() % 3;
-                    if (option == 1)
-                    {
-                        PositionY--;
-                        LastMovements.emplace_back("Left");
-                    }
-                    else if (option == 2)
-                    {
-                        PositionX--;
-                        LastMovements.emplace_back("Up");
-                    }
-                    else
-                    {
-                        PositionX++;
-                        LastMovements.emplace_back("Down");
-                    }
+                    if (option == 1) Move("Left");
+                    else if (option == 2) Move("Up");
+                    else Move("Down");
                 }
             }
             else
             {
                 int option = rand() % 4;
-                if (option == 1)
-                {
-                    PositionX++;
-                    LastMovements.emplace_back("Down");
-                }
-                else if (option == 2)
-                {
-                    PositionX--;
-                    LastMovements.emplace_back("Up");
-                }
-                else if (option == 3)
-                {
-                    PositionY++;
-                    LastMovements.emplace_back("Right");
-                }
-                else
-                {
-                    PositionY--;
-                    LastMovements.emplace_back("Left");
-                }
+                if (option == 1) Move("Down");
+                else if (option == 2) Move("Up");
+                else if (option == 3) Move("Right");
+                else Move("Left");
             }
         }
         view.IncrementSteps();
@@ -674,30 +377,20 @@ void Avatar::SolveTheMaze()
     view.ShowVictory();
 }
 
-// ====== Individual Detection Functions ======
-
-
-
-
-void Avatar::moveIfOnlyOneDirectionAvailable(bool& right,bool& left,bool& up,bool& down){
-    if (right && left && up)
-        {            
-            PositionX++;// Blocked right, left and up: move down
-        }
-    else if (right && left && down)
-        {
-            PositionX--;// Blocked right, left and down: move up
-        }
-    else if (right && down && up)
-        {
-            PositionY--;// Blocked right, down and up: move left
-        }
-    else if (left && down && up)
-        {
-            PositionY++;// Blocked left, down and up: move right
-        }
-
+void Avatar::MoveIfOnlyOneDirectionAvailable(bool& right,bool& left,bool& up,bool& down)
+{
+    if (right && left && up) Move("Down");          // Blocked right, left and up: move down       
+    else if (right && left && down)Move("Up");      // Blocked right, left and down: move up
+    else if (right && down && up) Move("Left");     // Blocked right, down and up: move left
+    else if (left && down && up)  Move("Right");    // Blocked left, down and up: move right
 }
 
-
-
+void Avatar::Move(std::string Direction)
+{
+    // If the avatar is not in a dead end, save the next move direction.
+    if (CountBlockedDirections()!=3) LastMovements.emplace_back(Direction); 
+    if (Direction=="Right") PositionY++;      
+    else if (Direction=="Left") PositionY--;
+    else if (Direction=="Up")  PositionX--;
+    else if (Direction=="Down") PositionX++;
+}
