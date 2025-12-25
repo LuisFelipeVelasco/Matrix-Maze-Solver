@@ -25,7 +25,7 @@ int Avatar::GetPositionX(){return PositionX;}
 int Avatar::GetPositionY(){return PositionY;}
 
 
-void Avatar::Move()
+void Avatar::SolveTheMaze()
 {
     // Create Visual object passing pointers to positions
     Visual view(&PositionX, &PositionY);
@@ -696,3 +696,48 @@ bool Avatar::DetectEmptyDown(int (&matrix)[10][10])
     else if (matrix[PositionX + 1][PositionY] == 0) return true;
     else return false;
 }
+
+void Avatar::moveIfOnlyOneDirectionAvailable(bool& right,bool& left,bool& up,bool& down,int (&matrix)[10][10]){
+    if (right && left && up)
+        {
+            // Blocked right, left and up: move down
+            matrix[PositionX][PositionY] = 0;
+            PositionX++;
+            if (!LastMovements.empty())
+            {                                  // if movements have already been made
+                LastMovements.pop_back(); // delete last movement
+            }
+        }
+        else if (right && left && down)
+        {
+            // Blocked right, left and down: move up
+            matrix[PositionX][PositionY] = 0;
+            PositionX--;
+            if (!LastMovements.empty())
+            {
+                LastMovements.pop_back();
+            }
+        }
+        else if (right && down && up)
+        {
+            // Blocked right, down and up: move left
+            matrix[PositionX][PositionY] = 0;
+            PositionY--;
+            if (!LastMovements.empty())
+            {
+                LastMovements.pop_back();
+            }
+        }
+        else if (left && down && up)
+        {
+            // Blocked left, down and up: move right
+            matrix[PositionX][PositionY] = 0;
+            PositionY++;
+            if (!LastMovements.empty())
+            {
+                LastMovements.pop_back();
+            }
+        }
+
+}
+

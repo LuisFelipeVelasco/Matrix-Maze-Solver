@@ -21,6 +21,6 @@ int main()
     int PositionX = Maze.GetBoardX();
     int PositionY = Maze.GetBoardY();
     Avatar IntelligentAgent("Smart", PositionX, PositionY);
-    IntelligentAgent.Move();
+    IntelligentAgent.SolveTheMaze();
     return 0;
 }
