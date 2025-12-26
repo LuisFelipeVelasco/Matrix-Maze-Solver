@@ -101,144 +101,10 @@ void Avatar::SolveTheMaze()
             if (!LastMovements.empty())LastMovements.pop_back();           
         }
 
-        else if(numberOfBlockCells==2) MoveIfTwoDirectionsAvaliable(right,left,up,down);
+        else if(numberOfBlockCells==2) MoveIfTwoDirectionsAvailable(right,left,up,down);
+        else if(numberOfBlockCells==1) MoveIfThreeDirectionsAvailable(right,left,up,down);
 
-        else if (up) // Blocked up: decide between down, left or right
-        { 
-            if (!LastMovements.empty())
-            {
-                if (GetLastMoveDirection() == "Up")
-                {
-                    int option = rand() % 2;
-                    if (option == 1) Move("Right");
-                    else Move("Left");
-                }
-
-                else if (GetLastMoveDirection() == "Right")
-                {
-                    int option = rand() % 2;
-                    if (option == 1) Move("Right");
-                    else Move("Down");
-                }
-
-                else if (GetLastMoveDirection() == "Left")
-                {
-                    int option = rand() % 2;
-                    if (option == 1) Move("Left");
-                    else Move("Down");
-                }
-            }
-            else
-            {
-                int option = rand() % 3;
-                if (option == 1) Move("Down");
-                else if (option == 2) Move("Right");
-                else Move("Left");
-            }
-        }
-        else if (down) // Blocked down: decide between up, left or right
-        { 
-            if (!LastMovements.empty())
-            {
-
-                if (GetLastMoveDirection() == "Down")
-                {
-                    int option = rand() % 2;
-                    if (option == 1) Move("Right");
-                    else Move("Left");
-                }
-
-                else if (GetLastMoveDirection() == "Right")
-                {
-                    int option = rand() % 2;
-                    if (option == 1) Move("Right");
-                    else Move("Up");
-                }
-
-                else if (GetLastMoveDirection() == "Left")
-                {
-                    int option = rand() % 2;
-                    if (option == 1) Move("Left");
-                    else Move("Up");
-                }
-            }
-            else
-            {
-                int option = rand() % 3;
-                if (option == 1) Move("Up");
-                else if (option == 2) Move("Left");
-                else Move("Right");
-            }
-        }
-        else if (right) // Blocked right: decide between other three directions
-        { 
-            if (!LastMovements.empty())
-            {
-                if (GetLastMoveDirection() == "Up")
-                {
-                    int option = rand() % 2;
-                    if (option == 1) Move("Left");
-                    else Move("Up");
-                }
-                else if (GetLastMoveDirection() == "Down")
-                {
-                    int option = rand() % 2;
-                    if (option == 1) Move("Left");
-                    else Move("Down");
-                }
-
-                else if (GetLastMoveDirection() == "Right")
-                {
-                    int option = rand() % 2;
-                    if (option == 1) Move("Up");
-                    else Move("Down");
-                }
-            }
-            else
-            {
-                int option = rand() % 3;
-                if (option == 1) Move("Down");
-                else if (option == 2) Move("Up");
-                else Move("Left");
-            }
-        }
-
-        else if (left) // Blocked left: decide between other three directions
-        { 
-            if (!LastMovements.empty())
-            {
-                if (GetLastMoveDirection() == "Down") 
-                {
-                    int option = rand() % 2;
-                    if (option == 1) Move("Right");
-                    else Move("Down");
-
-                }
-
-                else if (GetLastMoveDirection() == "Up")
-                {
-                    int option = rand() % 2;
-                    if (option == 1) Move("Right");
-                    else Move("Up");
-                }
-
-                else if (GetLastMoveDirection() == "Left")
-                {
-                    int option = rand() % 2;
-                    if (option == 1) Move("Up");
-                    else Move("Down");
-                }
-            }
-
-            else
-            {
-                int option = rand() % 3;
-                if (option == 1) Move("Down");
-                else if (option == 2) Move("Up");
-                else Move("Right");
-            }
-        }
-
+    
         else // avatar is not blocked around, so can make any decision
         { 
             if (!LastMovements.empty())
@@ -279,10 +145,10 @@ void Avatar::SolveTheMaze()
             else
             {
                 int option = rand() % 4;
-                if (option == 1) Move("Down");
-                else if (option == 2) Move("Up");
-                else if (option == 3) Move("Right");
-                else Move("Left");
+                if (option == 1)       Move("Down");
+                else if (option == 2)  Move("Up");
+                else if (option == 3)  Move("Right");
+                else                   Move("Left");
             }
         }
         view.IncrementSteps();
@@ -294,10 +160,10 @@ void Avatar::SolveTheMaze()
 
 void Avatar::MoveIfOnlyOneDirectionAvailable(bool& right,bool& left,bool& up,bool& down)
 {
-    if (right && left && up) Move("Down");          // Blocked right, left and up: move down       
-    else if (right && left && down)Move("Up");      // Blocked right, left and down: move up
-    else if (right && down && up) Move("Left");     // Blocked right, down and up: move left
-    else if (left && down && up)  Move("Right");    // Blocked left, down and up: move right
+    if (right && left && up)        Move("Down");          // Blocked right, left and up: move down       
+    else if (right && left && down) Move("Up");      // Blocked right, left and down: move up
+    else if (right && down && up)   Move("Left");     // Blocked right, down and up: move left
+    else if (left && down && up)    Move("Right");    // Blocked left, down and up: move right
 }
 
 void Avatar::MoveIfTwoDirectionsAvailable(bool& right,bool& left,bool& up,bool& down)
@@ -338,6 +204,76 @@ void Avatar::MoveIfTwoDirectionsAvailable(bool& right,bool& left,bool& up,bool& 
         else Move(option==1 ? "Left" : "Right");
     }
 }
+
+void Avatar:: MoveIfThreeDirectionsAvailable(bool& right,bool& left,bool& up,bool& down)
+{
+    int option1= rand() % 2;
+    int option2= rand() % 3;
+    if (up) // Blocked up: decide between down, left or right
+    { 
+        if (!LastMovements.empty())
+        {
+            if (GetLastMoveDirection() == "Up")         Move(option1==1 ? "Right" : "Left");
+            else if (GetLastMoveDirection() == "Right") Move(option1==1 ? "Right" : "Down");
+            else if (GetLastMoveDirection() == "Left")  Move(option1==1 ? "Down" : "Left");
+        }
+        else
+        {
+            if (option2 == 1) Move("Down");
+            else if (option2 == 2) Move("Right");
+            else Move("Left");
+        }
+    }
+    else if (down) // Blocked down: decide between up, left or right
+    { 
+        if (!LastMovements.empty())
+        {
+            if (GetLastMoveDirection() == "Down")       Move(option1==1 ? "Right" : "Left");
+            else if (GetLastMoveDirection() == "Right") Move(option1==1 ? "Right" : "Up");
+            else if (GetLastMoveDirection() == "Left")  Move(option1==1 ? "Left" : "Up");
+        }
+        else
+        {
+            if (option2 == 1) Move("Up");
+            else if (option2 == 2) Move("Left");
+            else Move("Right");
+        }
+    }
+    else if (right) // Blocked right: decide between other three directions
+    { 
+        if (!LastMovements.empty())
+        {
+            if (GetLastMoveDirection() == "Up") Move(option1==1 ? "Left" : "Up");
+            else if (GetLastMoveDirection() == "Down") Move(option1==1 ? "Down" : "Left");
+            else if (GetLastMoveDirection() == "Right") Move(option1==1 ? "Up" : "Down");
+        }
+        else
+        {
+            if (option2 == 1) Move("Down");
+            else if (option2 == 2) Move("Up");
+            else Move("Left");
+        }
+    }
+
+    else if (left) // Blocked left: decide between other three directions
+    { 
+        if (!LastMovements.empty())
+        {
+            if (GetLastMoveDirection() == "Down") Move(option1==1 ? "Right" : "Down");
+            else if (GetLastMoveDirection() == "Up") Move(option1==1 ? "Right" : "Up");
+            else if (GetLastMoveDirection() == "Left") Move(option1==1 ? "Up" : "Down");
+        }
+        else
+        {
+            if (option2 == 1) Move("Down");
+            else if (option2 == 2) Move("Up");
+            else Move("Right");
+        }
+    }    
+
+}
+
+
 
 void Avatar::Move(std::string Direction)
 {

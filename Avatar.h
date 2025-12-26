@@ -38,6 +38,8 @@ public:
     void SolveTheMaze();
     void MoveIfOnlyOneDirectionAvailable(bool& right,bool& left,bool& up,bool& down);
     void MoveIfTwoDirectionsAvailable(bool& right,bool& left,bool& up,bool& down);
+    void MoveIfThreeDirectionsAvailable(bool& right,bool& left,bool& up,bool& down);
+
     int CountBlockedDirections();
     void Move(std::string Direction);
 };
