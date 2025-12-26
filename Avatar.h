@@ -29,18 +29,21 @@ public:
     int GetPositionX();
     int GetPositionY();
     std::string GetLastMoveDirection();
-    // Methods for detecting empty spaces to make a decision
+
+    // Methods for detecting block spaces to make a decision
     bool DetectEmptyRight(int (&matrix)[10][10]);
     bool DetectEmptyLeft(int (&matrix)[10][10]);
     bool DetectEmptyUp(int (&matrix)[10][10]);
     bool DetectEmptyDown(int (&matrix)[10][10]);
-    // Movement method
+    int CountBlockedDirections();
+
+    // Movement methods
     void SolveTheMaze();
     void MoveIfOnlyOneDirectionAvailable(bool& right,bool& left,bool& up,bool& down);
     void MoveIfTwoDirectionsAvailable(bool& right,bool& left,bool& up,bool& down);
     void MoveIfThreeDirectionsAvailable(bool& right,bool& left,bool& up,bool& down);
-
-    int CountBlockedDirections();
+    void MoveIfFourDirectionsAvailable();
     void Move(std::string Direction);
+    bool HasRecordedMovements();
 };
 #endif //MATRIX_MAZE_SOLVER_AVATAR_H
