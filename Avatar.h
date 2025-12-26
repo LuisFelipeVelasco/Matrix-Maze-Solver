@@ -26,15 +26,18 @@ private:
 public:
     Avatar( std::string name, int& positionX ,  int& positionY); // Message passing by reference
 
+    // Getter Methods
+
     int GetPositionX();
     int GetPositionY();
     std::string GetLastMoveDirection();
+    int GetAleatoryNumber(int MaximumValue);
 
     // Methods for detecting block spaces to make a decision
-    bool DetectEmptyRight(int (&matrix)[10][10]);
-    bool DetectEmptyLeft(int (&matrix)[10][10]);
-    bool DetectEmptyUp(int (&matrix)[10][10]);
-    bool DetectEmptyDown(int (&matrix)[10][10]);
+    bool IsRightBlocked(int (&matrix)[10][10]);
+    bool IsLeftBlocked(int (&matrix)[10][10]);
+    bool IsUpBlocked(int (&matrix)[10][10]);
+    bool IsDownBlocked(int (&matrix)[10][10]);
     int CountBlockedDirections();
 
     // Movement methods

@@ -2,8 +2,7 @@
 #include <string>
 #include "Board.h"
 #include "Avatar.h"
-#include <exception>
-#include <cassert>
+
 /*
 Project: Matrix-Maze-Solver
 

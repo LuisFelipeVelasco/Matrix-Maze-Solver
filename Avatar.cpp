@@ -26,32 +26,33 @@ Avatar::Avatar(std::string name , int &x, int &y) : Name (name ) ,PositionX(x), 
 int Avatar::GetPositionX(){return PositionX;}
 int Avatar::GetPositionY(){return PositionY;}
 std::string Avatar::GetLastMoveDirection(){return LastMovements[LastMovements.size()-1] ;}
+int Avatar::GetAleatoryNumber(int MaximumValue){return rand() % MaximumValue ;}
 
 
 // ====== Individual Detection Functions ======
 
-bool Avatar::DetectEmptyRight(int (&matrix)[10][10])
+bool Avatar::IsRightBlocked(int (&matrix)[10][10])
 {
     if (PositionY + 1 > 9) return true;
     else if (matrix[PositionX][PositionY + 1] == 0) return true;
     else return false;
 }
 
-bool Avatar::DetectEmptyLeft(int (&matrix)[10][10])
+bool Avatar::IsLeftBlocked(int (&matrix)[10][10])
 {
     if (PositionY - 1 < 0) return true;
     else if (matrix[PositionX][PositionY - 1] == 0) return true;
     else return false;
 }
 
-bool Avatar::DetectEmptyUp(int (&matrix)[10][10])
+bool Avatar::IsUpBlocked(int (&matrix)[10][10])
 {
     if (PositionX - 1 < 0)return true;
     else if (matrix[PositionX - 1][PositionY] == 0) return true;
     else return false;
 }
 
-bool Avatar::DetectEmptyDown(int (&matrix)[10][10])
+bool Avatar::IsDownBlocked(int (&matrix)[10][10])
 {
     if (PositionX + 1 > 9) return true;
     else if (matrix[PositionX + 1][PositionY] == 0) return true;
@@ -62,12 +63,14 @@ bool Avatar::DetectEmptyDown(int (&matrix)[10][10])
 int Avatar::CountBlockedDirections(){
     int (&matrix)[10][10] = Board::GetMatrixStatic();
     int numberOfBlockCells=0;
-    if (DetectEmptyRight(matrix))  numberOfBlockCells++;
-    if (DetectEmptyLeft(matrix))   numberOfBlockCells++; 
-    if (DetectEmptyUp(matrix))     numberOfBlockCells++; 
-    if (DetectEmptyDown(matrix))   numberOfBlockCells++; 
+    if (IsRightBlocked(matrix))  numberOfBlockCells++;
+    if (IsLeftBlocked(matrix))   numberOfBlockCells++; 
+    if (IsUpBlocked(matrix))     numberOfBlockCells++; 
+    if (IsDownBlocked(matrix))   numberOfBlockCells++; 
     return numberOfBlockCells;     
 }
+
+bool Avatar::HasRecordedMovements(){return !LastMovements.empty();}
 
 //===================Movement Methods===================
 
@@ -86,10 +89,10 @@ void Avatar::SolveTheMaze()
     while (PositionY != 9 || PositionX != 9)  
     {  
         // Variables right,left,up,down to detect path direction around avatar
-        bool right = DetectEmptyRight(matrix);
-        bool left = DetectEmptyLeft(matrix);
-        bool up = DetectEmptyUp(matrix);
-        bool down = DetectEmptyDown(matrix);
+        bool right = IsRightBlocked(matrix);
+        bool left = IsLeftBlocked(matrix);
+        bool up = IsUpBlocked(matrix);
+        bool down = IsDownBlocked(matrix);
 
         int numberOfBlockCells=CountBlockedDirections();
 
@@ -123,7 +126,7 @@ void Avatar::MoveIfOnlyOneDirectionAvailable(bool& right,bool& left,bool& up,boo
 
 void Avatar::MoveIfTwoDirectionsAvailable(bool& right,bool& left,bool& up,bool& down)
 {
-    int option=rand() % 2; // Chose 1 or 2
+    int option=GetAleatoryNumber(2); // Chose 1 or 2
     
     if (left && right) // Blocked left and right
     { 
@@ -162,8 +165,8 @@ void Avatar::MoveIfTwoDirectionsAvailable(bool& right,bool& left,bool& up,bool& 
 
 void Avatar:: MoveIfThreeDirectionsAvailable(bool& right,bool& left,bool& up,bool& down)
 {
-    int option1= rand() % 2;
-    int option2= rand() % 3;
+    int option1= GetAleatoryNumber(2);
+    int option2= GetAleatoryNumber(3);
     if (up) // Blocked up: decide between down, left or right
     { 
         if (HasRecordedMovements())
@@ -230,7 +233,7 @@ void Avatar::MoveIfFourDirectionsAvailable()
 {
     if (HasRecordedMovements())
     {
-        int option= rand() % 3;
+        int option= GetAleatoryNumber(3);
         if (GetLastMoveDirection() == "Down")
         {
             if (option == 1)      Move("Right");
@@ -260,7 +263,7 @@ void Avatar::MoveIfFourDirectionsAvailable()
     }
     else
     {
-        int  option = rand() % 4;
+        int  option = GetAleatoryNumber(4);
         if (option == 1)       Move("Down");
         else if (option == 2)  Move("Up");
         else if (option == 3)  Move("Right");
@@ -276,5 +279,3 @@ void Avatar::Move(std::string Direction)
     else if (Direction=="Up")   PositionX--;
     else if (Direction=="Down") PositionX++;
 }
-
-bool Avatar::HasRecordedMovements(){return !LastMovements.empty();}
