@@ -79,6 +79,4 @@ Thinking in matrices
 
 Designing reusable C++ classes
 
-Applying logic to constrained movement problems
-
 It is especially useful for computer science students or anyone strengthening their C++ fundamentals.
