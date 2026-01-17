@@ -1,8 +1,7 @@
 # Matrix-Maze-Solver || Automatic Maze Navigation 🧭
 A clean and educational C++ maze-solving project that models a grid-based labyrinth using matrices and object-oriented programming. The project focuses on logic, movement validation, and clear class responsibilities, making it ideal for learning data structures, algorithms, and C++ design.
 
-![Image](https://github.com/user-attachments/assets/48f6c961-ffaf-4e7c-9a3a-f6f344cd1efe)
-
+![Image](https://github.com/user-attachments/assets/b23a1db9-24b6-43d7-8de9-caea1d951a05)
 # Features
 
 🧩 Maze represented as a matrix (2D grid)
